@@ -1,0 +1,18 @@
+{
+  "properties": [
+    {
+      "name": "local.server.host",
+      "type": "java.lang.String",
+      "description": "Description for local.server.host."
+    },
+    {
+      "name": "local.server.url",
+      "type": "java.lang.String",
+      "description": "Description for local.server.url."
+    },
+    {
+      "name": "spring.appication.name",
+      "type": "java.lang.String",
+      "description": "Description for spring.appication.name."
+    }
+  ] }
