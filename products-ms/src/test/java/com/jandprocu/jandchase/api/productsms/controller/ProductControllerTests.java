@@ -6,6 +6,7 @@ import com.jandprocu.jandchase.api.productsms.exception.ProductNotCreatedExcepti
 import com.jandprocu.jandchase.api.productsms.exception.ProductNotFoundException;
 import com.jandprocu.jandchase.api.productsms.exception.ProductNotUpdatedException;
 import com.jandprocu.jandchase.api.productsms.rest.ProductRequest;
+import com.jandprocu.jandchase.api.productsms.rest.ProductRequestByIds;
 import com.jandprocu.jandchase.api.productsms.rest.ProductResponse;
 import com.jandprocu.jandchase.api.productsms.service.IProductService;
 import org.junit.Before;
@@ -23,9 +24,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -129,6 +133,20 @@ public class ProductControllerTests {
         mockMvc.perform(MockMvcRequestBuilders.get("/products/pacostanzo@gmail.com")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void getProductByIds_ShouldReturnProduct() throws Exception {
+
+        //arrange
+        List<ProductResponse> productsResponse = Arrays.asList(productResponse);
+        Mockito.when(productService.getAllProductsByProductId(any(), anyInt(), anyInt(), anyString())).thenReturn(productsResponse);
+        //act
+        ProductRequestByIds productRequestByIds = new ProductRequestByIds("PRODUCT_TD_1");
+        mockMvc.perform(MockMvcRequestBuilders.post("/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(productRequestByIds)))
+                .andExpect(status().isOk());
     }
 
 

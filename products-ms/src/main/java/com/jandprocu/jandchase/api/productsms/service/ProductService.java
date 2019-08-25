@@ -3,6 +3,7 @@ package com.jandprocu.jandchase.api.productsms.service;
 import com.jandprocu.jandchase.api.productsms.exception.ProductNotCreatedException;
 import com.jandprocu.jandchase.api.productsms.exception.ProductNotFoundException;
 import com.jandprocu.jandchase.api.productsms.exception.ProductNotUpdatedException;
+import com.jandprocu.jandchase.api.productsms.rest.ProductRequestByIds;
 import org.modelmapper.ModelMapper;
 import com.jandprocu.jandchase.api.productsms.model.Product;
 import com.jandprocu.jandchase.api.productsms.repository.ProductRepository;
@@ -10,10 +11,14 @@ import com.jandprocu.jandchase.api.productsms.rest.ProductResponse;
 import com.jandprocu.jandchase.api.productsms.rest.ProductRest;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService implements IProductService {
@@ -74,6 +79,23 @@ public class ProductService implements IProductService {
         Product productEntity = getProductEntityByProductId(productId);
         this.productRepository.deleteById(productEntity.getId());
         return this.modelMapper.map(productEntity, ProductResponse.class);
+    }
+
+    @Override
+    public List<ProductResponse> getAllProductsByProductId(ProductRequestByIds requestByIds, int pageNo, int pageSize, String sortBy) {
+        Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+        Page<Product> pagedResult = this.productRepository.findByProductIdIn(requestByIds.getProductIds(),paging);
+
+        List<ProductResponse> productResponses = new ArrayList<>();
+
+        if(pagedResult.hasContent()) {
+            System.out.println("getAllProductsByProductId -- "+  pagedResult.getContent());
+            List<Product> products = pagedResult.getContent();
+            productResponses.addAll(products.stream().map(product -> this.modelMapper.map(product, ProductResponse.class))
+                                                                .collect(Collectors.toList()));
+        }
+        System.out.println("getAllProductsByProductId -- "+  productResponses.size());
+        return productResponses;
     }
 
 
