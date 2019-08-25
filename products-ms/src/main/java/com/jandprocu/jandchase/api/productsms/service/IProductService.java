@@ -1,7 +1,10 @@
 package com.jandprocu.jandchase.api.productsms.service;
 
+import com.jandprocu.jandchase.api.productsms.rest.ProductRequestByIds;
 import com.jandprocu.jandchase.api.productsms.rest.ProductResponse;
 import com.jandprocu.jandchase.api.productsms.rest.ProductRest;
+
+import java.util.List;
 
 public interface IProductService {
 
@@ -13,4 +16,5 @@ public interface IProductService {
 
     ProductResponse deleteProductByProductId(String productId);
 
+    List<ProductResponse> getAllProductsByProductId(ProductRequestByIds requestByIds, int pageNo, int pageSize, String sortBy);
 }
