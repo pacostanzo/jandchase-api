@@ -17,4 +17,6 @@ public interface IProductService {
     ProductResponse deleteProductByProductId(String productId);
 
     List<ProductResponse> getAllProductsByProductId(ProductRequestByIds requestByIds, int pageNo, int pageSize, String sortBy);
+
+    List<ProductResponse> getAllProducts(String name, int pageNo, int pageSize, String sortBy);
 }

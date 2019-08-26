@@ -4,7 +4,6 @@ import com.jandprocu.jandchase.api.productsms.rest.ProductRequest;
 import com.jandprocu.jandchase.api.productsms.rest.ProductRequestByIds;
 import com.jandprocu.jandchase.api.productsms.rest.ProductResponse;
 import com.jandprocu.jandchase.api.productsms.service.IProductService;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,11 +17,9 @@ import java.util.List;
 public class ProductController {
 
     private IProductService productService;
-    private Environment environment;
 
-    ProductController(IProductService productService, Environment environment) {
+    ProductController(IProductService productService) {
         this.productService = productService;
-        this.environment = environment;
     }
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
@@ -31,6 +28,18 @@ public class ProductController {
         ProductResponse createdProduct = productService.createProduct(createRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdProduct);
     }
+
+    @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    public ResponseEntity<List<ProductResponse>> getAllProducts(
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(defaultValue = "productId") String sortBy
+    ) {
+        List<ProductResponse> productsResponse = productService.getAllProducts(name, pageNo, pageSize, sortBy);
+        return ResponseEntity.status(HttpStatus.OK).body(productsResponse);
+    }
+
 
     @GetMapping(path = "/{productId}",
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
@@ -41,7 +50,8 @@ public class ProductController {
 
 
     @PostMapping(path = "/getByIds",
-                produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+                 consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
+                 produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<List<ProductResponse>> getAllProductsByProductId(
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize,
