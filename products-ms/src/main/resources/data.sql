@@ -1,0 +1,15 @@
+INSERT INTO products (product_id, name, description, created_at, category, amount, currency) VALUES ('TEST_ID_1', 'Mac Book Air', 'NoteBook Mac Book Air', '2017-08-01', 'computer', 1000, 'USD');
+INSERT INTO products (product_id, name, description, created_at, category, amount, currency) VALUES ('TEST_ID_2', 'Mac Book Air', 'NoteBook Mac Book Air', '2017-08-01', 'computer', 1000, 'USD');
+INSERT INTO products (product_id, name, description, created_at, category, amount, currency) VALUES ('TEST_ID_3', 'Mac Book Air', 'NoteBook Mac Book Air', '2017-08-01', 'computer', 1000, 'USD');
+INSERT INTO products (product_id, name, description, created_at, category, amount, currency) VALUES ('TEST_ID_4', 'Mac Book Air', 'NoteBook Mac Book Air', '2017-08-01', 'computer', 1000, 'USD');
+INSERT INTO products (product_id, name, description, created_at, category, amount, currency) VALUES ('TEST_ID_5', 'Mac Book Air', 'NoteBook Mac Book Air', '2017-08-01', 'computer', 1000, 'USD');
+INSERT INTO products (product_id, name, description, created_at, category, amount, currency) VALUES ('TEST_ID_6', 'Mac Book Air', 'NoteBook Mac Book Air', '2017-08-01', 'computer', 1000, 'USD');
+INSERT INTO products (product_id, name, description, created_at, category, amount, currency) VALUES ('TEST_ID_7', 'Mac Book Air', 'NoteBook Mac Book Air', '2017-08-01', 'computer', 1000, 'USD');
+INSERT INTO products (product_id, name, description, created_at, category, amount, currency) VALUES ('TEST_ID_8', 'Mac Book Air', 'NoteBook Mac Book Air', '2017-08-01', 'computer', 1000, 'USD');
+INSERT INTO products (product_id, name, description, created_at, category, amount, currency) VALUES ('TEST_ID_9', 'Mac Book Air', 'NoteBook Mac Book Air', '2017-08-01', 'computer', 1000, 'USD');
+INSERT INTO products (product_id, name, description, created_at, category, amount, currency) VALUES ('TEST_ID_10', 'Mac Book Air', 'NoteBook Mac Book Air', '2017-08-01', 'computer', 1000, 'USD');
+INSERT INTO products (product_id, name, description, created_at, category, amount, currency) VALUES ('TEST_ID_11', 'Mac Book Air', 'NoteBook Mac Book Air', '2017-08-01', 'computer', 1000, 'USD');
+INSERT INTO products (product_id, name, description, created_at, category, amount, currency) VALUES ('TEST_ID_12', 'Mac Book Air', 'NoteBook Mac Book Air', '2017-08-01', 'computer', 1000, 'USD');
+INSERT INTO products (product_id, name, description, created_at, category, amount, currency) VALUES ('TEST_ID_13', 'Mac Book Air', 'NoteBook Mac Book Air', '2017-08-01', 'computer', 1000, 'USD');
+INSERT INTO products (product_id, name, description, created_at, category, amount, currency) VALUES ('TEST_ID_14', 'Mac Book Air', 'NoteBook Mac Book Air', '2017-08-01', 'computer', 1000, 'USD');
+INSERT INTO products (product_id, name, description, created_at, category, amount, currency) VALUES ('TEST_ID_15', 'Mac Book Air', 'NoteBook Mac Book Air', '2017-08-01', 'computer', 1000, 'USD');
