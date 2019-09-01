@@ -6,17 +6,20 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Date;
+import java.util.Map;
 
 @Entity
-@Table(name="products")
+@Table(name = "products")
 public class Product implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable=false, unique=true, name="product_id")
+    @Column(nullable = false, unique = true, name = "product_id")
     @NotEmpty
     private String productId;
 
@@ -30,7 +33,7 @@ public class Product implements Serializable {
     @NotEmpty
     private String category;
 
-    @Column(precision=8, scale=2, nullable = false)
+    @Column(precision = 8, scale = 2, nullable = false)
     private double amount;
 
     @Column(nullable = false, length = 5)
@@ -38,11 +41,10 @@ public class Product implements Serializable {
     private String currency;
 
     @NotNull
-    @Column(name="created_at")
+    @Column(name = "created_at")
     @Temporal(TemporalType.DATE)
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date createdAt;
-
 
     public Long getId() {
         return id;
@@ -109,4 +111,16 @@ public class Product implements Serializable {
     }
 
     private static final long serialVersionUID = 1L;
+
+    public void setFieldValue(String field, Object value) throws Exception {
+        Class productClass = this.getClass();
+        String methodName = "";
+        if (field != null && !field.isEmpty()) {
+            methodName += "set" + field.substring(0, 1).toUpperCase() + field.substring(1);
+            Class[] args = new Class[1];
+            args[0] = String.class;
+            Method setterMethod = productClass.getMethod(methodName, args);
+            setterMethod.invoke(this, value);
+        }
+    }
 }
