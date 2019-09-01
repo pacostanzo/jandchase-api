@@ -20,8 +20,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -84,25 +82,19 @@ public class ProductService implements IProductService {
     }
 
     private Product updatePartialProductEntity(Map<String, Object> updateRequest, Product productEntity) throws Exception {
-        Class productClass = Product.class;
-
-       boolean anyError = updateRequest.entrySet().stream().anyMatch(entry -> {
+        boolean anyError = updateRequest.entrySet().stream().anyMatch(entry -> {
             boolean updated = true;
-            String field = entry.getKey();
             try {
-                Field productField = productClass.getDeclaredField(field);
-                Class fieldType = productField.getType();
-                if (fieldType.isPrimitive() ||  fieldType.isInstance(new String())) {
-                    productEntity.setFieldValue(field,entry.getValue());
-                }
+                productEntity.setFieldValue(entry.getKey(), entry.getValue());
             } catch (Exception e) {
                 updated = false;
             }
-            return updated == false;});
+            return updated == false;
+        });
+        if (anyError) {
+            throw new Exception();
+        }
 
-       if (anyError) {
-           throw  new Exception();
-       }
         return productEntity;
     }
 
@@ -156,4 +148,6 @@ public class ProductService implements IProductService {
             throw new ProductNotFoundException("Product with productId: " + productId + " not found");
         return productEntity;
     }
+
+
 }
