@@ -147,6 +147,7 @@ public class ProductsMsApplicationTests {
 	public void e_updatePartialProductFields_OK_ReturnUpdatedProductDetails() {
 		HashMap<String, Object> partialUpdateRequest = new HashMap<>();
         partialUpdateRequest.put("category", "5th avenue");
+        partialUpdateRequest.put("amount", "1000");
 
 		//arrange
 		HttpEntity<Map<String, Object>> request = new HttpEntity<>(partialUpdateRequest, headers);

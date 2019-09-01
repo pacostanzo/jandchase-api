@@ -110,17 +110,40 @@ public class Product implements Serializable {
         this.currency = currency;
     }
 
-    private static final long serialVersionUID = 1L;
 
-    public void setFieldValue(String field, Object value) throws Exception {
+
+    public void setFieldValue(String fieldName, Object value) throws Exception {
         Class productClass = this.getClass();
-        String methodName = "";
-        if (field != null && !field.isEmpty()) {
-            methodName += "set" + field.substring(0, 1).toUpperCase() + field.substring(1);
-            Class[] args = new Class[1];
-            args[0] = String.class;
-            Method setterMethod = productClass.getMethod(methodName, args);
-            setterMethod.invoke(this, value);
+        if (fieldName != null && !fieldName.isEmpty()) {
+            String methodName = "update" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+            Class[] cArg = new Class[1];
+            cArg[0] = Object.class;
+            Method method = productClass.getDeclaredMethod(methodName, cArg);
+            method.invoke(this, value);
         }
     }
+
+    private void updateName(Object value) {
+        this.setName(value.toString());
+    }
+
+    private void updateDesciption(Object value) {
+        this.setDescription(value.toString());
+    }
+
+    private void updateCategory(Object value) {
+        this.setCategory(value.toString());
+    }
+
+    private void updateAmount(Object value) {
+        String toString = value.toString();
+        Double doubleObject = Double.parseDouble(toString);
+        this.setAmount(doubleObject.doubleValue());
+    }
+
+    private void updateCurrency(Object value) {
+        this.setCurrency(value.toString());
+    }
+
+    private static final long serialVersionUID = 1L;
 }
