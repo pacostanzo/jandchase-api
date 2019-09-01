@@ -143,7 +143,7 @@ public class ProductControllerTests {
         Mockito.when(productService.getAllProductsByProductId(any(), anyInt(), anyInt(), anyString())).thenReturn(productsResponse);
         //act
         ProductRequestByIds productRequestByIds = new ProductRequestByIds("PRODUCT_TD_1");
-        mockMvc.perform(MockMvcRequestBuilders.post("/products")
+        mockMvc.perform(MockMvcRequestBuilders.post("/products/getByIds")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(productRequestByIds)))
                 .andExpect(status().isOk());

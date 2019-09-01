@@ -5,6 +5,7 @@ import com.jandprocu.jandchase.api.productsms.rest.ProductResponse;
 import com.jandprocu.jandchase.api.productsms.rest.ProductRest;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IProductService {
 
@@ -13,6 +14,8 @@ public interface IProductService {
     ProductResponse getProductByProductId(String productId);
 
     ProductResponse updateProductByProductId(String productId, ProductRest updateRequest);
+
+    ProductResponse partialUpdateProductByProductId(String productId, Map<String, Object> updateRequest);
 
     ProductResponse deleteProductByProductId(String productId);
 

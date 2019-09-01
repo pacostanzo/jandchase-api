@@ -20,6 +20,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -113,7 +115,6 @@ public class ProductsMsApplicationTests {
                 new ParameterizedTypeReference<List<ProductResponse>>(){});
 
         //assert
-        System.out.println(response);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().get(0).getProductId()).isEqualTo("TEST_ID_1");
         assertThat(response.getBody().get(1).getProductId()).isEqualTo("TEST_ID_2");
@@ -133,6 +134,7 @@ public class ProductsMsApplicationTests {
                 HttpMethod.PUT, request, ProductResponse.class);
 
         //assert
+
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getName()).isEqualTo("Dell Inspiron");
         assertThat(response.getBody().getDescription()).isEqualTo("NoteBook Dell Inspiron 15");
@@ -141,24 +143,24 @@ public class ProductsMsApplicationTests {
     }
 
 
-    //TODO UPDATE PARTIAL FIELDS
-	/*@Test
+	@Test
 	public void e_updatePartialProductFields_OK_ReturnUpdatedProductDetails() {
-		HashMap<String, Object> fullUpdateRequest = new HashMap<>();
-		fullUpdateRequest.put("category", "5th avenue");
+		HashMap<String, Object> partialUpdateRequest = new HashMap<>();
+        partialUpdateRequest.put("category", "5th avenue");
 
 		//arrange
-		HttpEntity<Map<String, Object>> request = new HttpEntity<>(fullUpdateRequest, headers);
+		HttpEntity<Map<String, Object>> request = new HttpEntity<>(partialUpdateRequest, headers);
+        testRestTemplate.getRestTemplate().setRequestFactory(new HttpComponentsClientHttpRequestFactory());
 
 		//act
 		ResponseEntity<ProductResponse> response = testRestTemplate.exchange(
-				localHost + randomServerPort + "/users/" + PRODUCT_ID,
+				localHost + randomServerPort + "/products/" + PRODUCT_ID,
 				HttpMethod.PATCH, request, ProductResponse.class);
 
 		//assert
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 		assertThat(response.getBody().getCategory()).isEqualTo("5th avenue");
-	}*/
+	}
 
 
     @Test

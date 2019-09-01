@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("products")
@@ -50,8 +51,8 @@ public class ProductController {
 
 
     @PostMapping(path = "/getByIds",
-                 consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
-                 produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<List<ProductResponse>> getAllProductsByProductId(
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize,
@@ -68,6 +69,14 @@ public class ProductController {
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<ProductResponse> updateProduct(@PathVariable String productId, @Valid @RequestBody ProductRequest updateRequest) {
         ProductResponse updateResponse = productService.updateProductByProductId(productId, updateRequest);
+        return ResponseEntity.status(HttpStatus.OK).body(updateResponse);
+    }
+
+    @PatchMapping(path = "/{productId}",
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    public ResponseEntity<ProductResponse> partialUpdateProduct(@PathVariable String productId, @RequestBody Map<String, Object> updateRequest) {
+        ProductResponse updateResponse = productService.partialUpdateProductByProductId(productId, updateRequest);
         return ResponseEntity.status(HttpStatus.OK).body(updateResponse);
     }
 
