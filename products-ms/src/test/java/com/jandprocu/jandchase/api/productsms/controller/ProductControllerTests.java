@@ -8,6 +8,7 @@ import com.jandprocu.jandchase.api.productsms.exception.ProductNotUpdatedExcepti
 import com.jandprocu.jandchase.api.productsms.rest.ProductRequest;
 import com.jandprocu.jandchase.api.productsms.rest.ProductRequestByIds;
 import com.jandprocu.jandchase.api.productsms.rest.ProductResponse;
+import com.jandprocu.jandchase.api.productsms.rest.ProductResponsePageable;
 import com.jandprocu.jandchase.api.productsms.service.IProductService;
 import org.junit.Before;
 import org.junit.Test;
@@ -140,7 +141,8 @@ public class ProductControllerTests {
 
         //arrange
         List<ProductResponse> productsResponse = Arrays.asList(productResponse);
-        Mockito.when(productService.getAllProductsByProductId(any(), anyInt(), anyInt(), anyString())).thenReturn(productsResponse);
+        ProductResponsePageable productResponsePageable = new ProductResponsePageable(productsResponse,0, 0);
+        Mockito.when(productService.getAllProductsByProductId(any(), anyInt(), anyInt(), anyString())).thenReturn(productResponsePageable);
         //act
         ProductRequestByIds productRequestByIds = new ProductRequestByIds("PRODUCT_TD_1");
         mockMvc.perform(MockMvcRequestBuilders.post("/products/getByIds")
