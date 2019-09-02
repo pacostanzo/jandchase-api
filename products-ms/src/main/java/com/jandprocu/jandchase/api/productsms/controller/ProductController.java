@@ -3,6 +3,7 @@ package com.jandprocu.jandchase.api.productsms.controller;
 import com.jandprocu.jandchase.api.productsms.rest.ProductRequest;
 import com.jandprocu.jandchase.api.productsms.rest.ProductRequestByIds;
 import com.jandprocu.jandchase.api.productsms.rest.ProductResponse;
+import com.jandprocu.jandchase.api.productsms.rest.ProductResponsePageable;
 import com.jandprocu.jandchase.api.productsms.service.IProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,13 +32,13 @@ public class ProductController {
     }
 
     @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity<List<ProductResponse>> getAllProducts(
+    public ResponseEntity<ProductResponsePageable> getAllProducts(
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "productId") String sortBy
     ) {
-        List<ProductResponse> productsResponse = productService.getAllProducts(name, pageNo, pageSize, sortBy);
+        ProductResponsePageable productsResponse = productService.getAllProducts(name, pageNo, pageSize, sortBy);
         return ResponseEntity.status(HttpStatus.OK).body(productsResponse);
     }
 
@@ -53,13 +54,13 @@ public class ProductController {
     @PostMapping(path = "/getByIds",
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity<List<ProductResponse>> getAllProductsByProductId(
+    public ResponseEntity<ProductResponsePageable> getAllProductsByProductId(
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "productId") String sortBy,
             @Valid @RequestBody ProductRequestByIds requestByIds) {
 
-        List<ProductResponse> productsResponse = productService.getAllProductsByProductId(requestByIds, pageNo, pageSize, sortBy);
+        ProductResponsePageable productsResponse = productService.getAllProductsByProductId(requestByIds, pageNo, pageSize, sortBy);
 
         return ResponseEntity.status(HttpStatus.OK).body(productsResponse);
     }

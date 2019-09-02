@@ -3,6 +3,7 @@ package com.jandprocu.jandchase.api.productsms;
 import com.jandprocu.jandchase.api.productsms.rest.ProductRequest;
 import com.jandprocu.jandchase.api.productsms.rest.ProductRequestByIds;
 import com.jandprocu.jandchase.api.productsms.rest.ProductResponse;
+import com.jandprocu.jandchase.api.productsms.rest.ProductResponsePageable;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -15,7 +16,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -27,7 +27,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.*;
@@ -110,15 +109,15 @@ public class ProductsMsApplicationTests {
         HttpEntity<ProductRequestByIds> request = new HttpEntity<>(requestByIds, headers);
 
         //act
-        ResponseEntity<List<ProductResponse>> response = testRestTemplate.exchange(
+        ResponseEntity<ProductResponsePageable> response = testRestTemplate.exchange(
                 localHost + randomServerPort + "/products/getByIds", HttpMethod.POST, request,
-                new ParameterizedTypeReference<List<ProductResponse>>(){});
+                ProductResponsePageable.class);
 
         //assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().get(0).getProductId()).isEqualTo("TEST_ID_1");
-        assertThat(response.getBody().get(1).getProductId()).isEqualTo("TEST_ID_2");
-        assertThat(response.getBody().get(2).getProductId()).isEqualTo("TEST_ID_3");
+        assertThat(response.getBody().getProducts().get(0).getProductId()).isEqualTo("TEST_ID_1");
+        assertThat(response.getBody().getProducts().get(1).getProductId()).isEqualTo("TEST_ID_2");
+        assertThat(response.getBody().getProducts().get(2).getProductId()).isEqualTo("TEST_ID_3");
     }
 
 

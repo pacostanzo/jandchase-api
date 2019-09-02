@@ -8,6 +8,7 @@ import com.jandprocu.jandchase.api.productsms.rest.ProductRequestByIds;
 import com.jandprocu.jandchase.api.productsms.model.Product;
 import com.jandprocu.jandchase.api.productsms.repository.ProductRepository;
 import com.jandprocu.jandchase.api.productsms.rest.ProductResponse;
+import com.jandprocu.jandchase.api.productsms.rest.ProductResponsePageable;
 import com.jandprocu.jandchase.api.productsms.rest.ProductRest;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -19,7 +20,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -115,31 +115,36 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public List<ProductResponse> getAllProductsByProductId(ProductRequestByIds requestByIds, int pageNo, int pageSize, String sortBy) {
+    public ProductResponsePageable getAllProductsByProductId(ProductRequestByIds requestByIds, int pageNo, int pageSize, String sortBy) {
         Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
         Page<Product> pagedResult = this.productRepository.findByProductIdIn(requestByIds.getProductIds(), paging);
 
-        return getListOfProductsResponse(pagedResult);
+        return getListOfProductsResponse(pagedResult, pageNo);
     }
 
     @Override
-    public List<ProductResponse> getAllProducts(String name, int pageNo, int pageSize, String sortBy) {
+    public ProductResponsePageable getAllProducts(String name, int pageNo, int pageSize, String sortBy) {
         Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
         Specification<Product> spec = Specification.where(new ProductSpecification(name));
         Page<Product> pagedResult = this.productRepository.findAll(spec, paging);
 
-        return getListOfProductsResponse(pagedResult);
+        return getListOfProductsResponse(pagedResult, pageNo);
     }
 
-    private List<ProductResponse> getListOfProductsResponse(Page<Product> pagedResult) {
+    private ProductResponsePageable getListOfProductsResponse(Page<Product> pagedResult, int currentPage) {
         List<ProductResponse> productResponses = new ArrayList<>();
-
+        ProductResponsePageable productResponsePageable = new ProductResponsePageable();
         if (pagedResult.hasContent()) {
             List<Product> products = pagedResult.getContent();
             productResponses.addAll(products.stream().map(product -> this.modelMapper.map(product, ProductResponse.class))
                     .collect(Collectors.toList()));
+
+            productResponsePageable.setTotalPages(pagedResult.getTotalPages());
+            productResponsePageable.setCurrentPageNumber(currentPage);
+            productResponsePageable.setProducts(productResponses);
         }
-        return productResponses;
+
+        return productResponsePageable;
     }
 
     private Product getProductEntityByProductId(String productId) {
