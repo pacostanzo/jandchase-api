@@ -121,7 +121,6 @@ public class ProductsMsApplicationTests {
     }
 
 
-
     @Test
     public void d_updateAllProductFields_OK_ReturnUpdatedProductDetails() {
         //arrange
@@ -142,25 +141,25 @@ public class ProductsMsApplicationTests {
     }
 
 
-	@Test
-	public void e_updatePartialProductFields_OK_ReturnUpdatedProductDetails() {
-		HashMap<String, Object> partialUpdateRequest = new HashMap<>();
+    @Test
+    public void e_updatePartialProductFields_OK_ReturnUpdatedProductDetails() {
+        HashMap<String, Object> partialUpdateRequest = new HashMap<>();
         partialUpdateRequest.put("category", "5th avenue");
         partialUpdateRequest.put("amount", "1000");
 
-		//arrange
-		HttpEntity<Map<String, Object>> request = new HttpEntity<>(partialUpdateRequest, headers);
+        //arrange
+        HttpEntity<Map<String, Object>> request = new HttpEntity<>(partialUpdateRequest, headers);
         testRestTemplate.getRestTemplate().setRequestFactory(new HttpComponentsClientHttpRequestFactory());
 
-		//act
-		ResponseEntity<ProductResponse> response = testRestTemplate.exchange(
-				localHost + randomServerPort + "/products/" + PRODUCT_ID,
-				HttpMethod.PATCH, request, ProductResponse.class);
+        //act
+        ResponseEntity<ProductResponse> response = testRestTemplate.exchange(
+                localHost + randomServerPort + "/products/" + PRODUCT_ID,
+                HttpMethod.PATCH, request, ProductResponse.class);
 
-		//assert
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-		assertThat(response.getBody().getCategory()).isEqualTo("5th avenue");
-	}
+        //assert
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().getCategory()).isEqualTo("5th avenue");
+    }
 
 
     @Test
