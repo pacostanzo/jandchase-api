@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -36,6 +37,7 @@ public class ProductService implements IProductService {
     }
 
     @Override
+    @Transactional
     public ProductResponse createProduct(ProductRest productRequest) {
 
         Product productEntity = modelMapper.map(productRequest, Product.class);
@@ -57,6 +59,7 @@ public class ProductService implements IProductService {
     }
 
     @Override
+    @Transactional
     public ProductResponse updateProductByProductId(String productId, ProductRest updateRequest) {
         Product productEntity = getProductEntityByProductId(productId);
         Product updatedProduct = this.updateProductEntity(updateRequest, productEntity);
@@ -69,6 +72,7 @@ public class ProductService implements IProductService {
     }
 
     @Override
+    @Transactional
     public ProductResponse partialUpdateProductByProductId(String productId, Map<String, Object> updateRequest) {
         Product productEntity = getProductEntityByProductId(productId);
         Product updatedProduct;
@@ -108,6 +112,7 @@ public class ProductService implements IProductService {
     }
 
     @Override
+    @Transactional
     public ProductResponse deleteProductByProductId(String productId) {
         Product productEntity = getProductEntityByProductId(productId);
         this.productRepository.deleteById(productEntity.getId());
@@ -115,6 +120,7 @@ public class ProductService implements IProductService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ProductResponsePageable getAllProductsByProductId(ProductRequestByIds requestByIds, int pageNo, int pageSize, String sortBy) {
         Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
         Page<Product> pagedResult = this.productRepository.findByProductIdIn(requestByIds.getProductIds(), paging);
@@ -123,6 +129,7 @@ public class ProductService implements IProductService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ProductResponsePageable getAllProducts(String name, int pageNo, int pageSize, String sortBy) {
         Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
         Specification<Product> spec = Specification.where(new ProductSpecification(name));
@@ -147,7 +154,8 @@ public class ProductService implements IProductService {
         return productResponsePageable;
     }
 
-    private Product getProductEntityByProductId(String productId) {
+    @Transactional(readOnly = true)
+    public Product getProductEntityByProductId(String productId) {
         Product productEntity = this.productRepository.findByProductId(productId);
         if (productEntity == null)
             throw new ProductNotFoundException("Product with productId: " + productId + " not found");

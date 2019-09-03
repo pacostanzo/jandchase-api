@@ -1,14 +1,14 @@
 package com.jandprocu.jandchase.api.productsms.rest;
 
-import java.util.ArrayList;
+import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
 
 public class ProductRequestByIds {
+    @Valid
     private List<String> productIds;
 
     public ProductRequestByIds() {
-        this.productIds = new ArrayList<>();
     }
 
     public ProductRequestByIds(String ids) {

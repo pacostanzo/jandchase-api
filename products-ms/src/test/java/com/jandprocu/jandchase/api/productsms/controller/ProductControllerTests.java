@@ -141,7 +141,7 @@ public class ProductControllerTests {
 
         //arrange
         List<ProductResponse> productsResponse = Arrays.asList(productResponse);
-        ProductResponsePageable productResponsePageable = new ProductResponsePageable(productsResponse,0, 0);
+        ProductResponsePageable productResponsePageable = new ProductResponsePageable(productsResponse, 0, 0);
         Mockito.when(productService.getAllProductsByProductId(any(), anyInt(), anyInt(), anyString())).thenReturn(productResponsePageable);
         //act
         ProductRequestByIds productRequestByIds = new ProductRequestByIds("PRODUCT_TD_1");
