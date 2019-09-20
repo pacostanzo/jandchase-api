@@ -1,9 +1,9 @@
 HELP.md
 target/
-eureka-ms/.mvn/wrapper/**
-products-ms/.mvn/wrapper/**
-config-ms/.mvn/wrapper/**
-gateway-ms/.mvn/wrapper/**
+**/.mvn/wrapper/**
+
+**/mvnw
+**/mvnw.cmd
 
 ### IntelliJ IDEA ###
 .idea
