@@ -1,16 +1,9 @@
 HELP.md
 target/
-orders-ms/.mvn/wrapper/**
+eureka-ms/.mvn/wrapper/**
 products-ms/.mvn/wrapper/**
-
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
+config-ms/.mvn/wrapper/**
+gateway-ms/.mvn/wrapper/**
 
 ### IntelliJ IDEA ###
 .idea
@@ -18,13 +11,3 @@ products-ms/.mvn/wrapper/**
 *.iml
 *.ipr
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-
-### VS Code ###
-.vscode/
