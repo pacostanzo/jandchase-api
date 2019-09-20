@@ -5,6 +5,8 @@ import com.jandprocu.jandchase.api.productsms.rest.ProductRequestByIds;
 import com.jandprocu.jandchase.api.productsms.rest.ProductResponse;
 import com.jandprocu.jandchase.api.productsms.rest.ProductResponsePageable;
 import com.jandprocu.jandchase.api.productsms.service.IProductService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,9 @@ import java.util.Map;
 @RestController
 @RequestMapping("products")
 public class ProductController {
+
+    @Autowired
+    private Environment env;
 
     private IProductService productService;
 
@@ -84,5 +89,10 @@ public class ProductController {
     public ResponseEntity<ProductResponse> deleteProduct(@PathVariable String productId) {
         ProductResponse deleteProduct = productService.deleteProductByProductId(productId);
         return ResponseEntity.status(HttpStatus.OK).body(deleteProduct);
+    }
+
+    @GetMapping("/testFromGit")
+    public ResponseEntity<String> getTestFromGit() {
+        return ResponseEntity.status(HttpStatus.OK).body(env.getProperty("product.name.property"));
     }
 }
