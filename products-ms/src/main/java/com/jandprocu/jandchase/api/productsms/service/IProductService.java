@@ -22,4 +22,6 @@ public interface IProductService {
     ProductResponsePageable getAllProductsByProductId(ProductRequestByIds requestByIds, int pageNo, int pageSize, String sortBy);
 
     ProductResponsePageable getAllProducts(String name, int pageNo, int pageSize, String sortBy);
+
+    String getFromCloudConfig();
 }

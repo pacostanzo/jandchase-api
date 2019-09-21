@@ -12,6 +12,8 @@ import com.jandprocu.jandchase.api.productsms.rest.ProductResponsePageable;
 import com.jandprocu.jandchase.api.productsms.rest.ProductRest;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,6 +31,9 @@ public class ProductService implements IProductService {
 
     private ProductRepository productRepository;
     private ModelMapper modelMapper;
+
+    @Autowired
+    private Environment env;
 
     public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
@@ -136,6 +141,11 @@ public class ProductService implements IProductService {
         Page<Product> pagedResult = this.productRepository.findAll(spec, paging);
 
         return getListOfProductsResponse(pagedResult, pageNo);
+    }
+
+    @Override
+    public String getFromCloudConfig() {
+        return env.getProperty("product.name.property");
     }
 
     private ProductResponsePageable getListOfProductsResponse(Page<Product> pagedResult, int currentPage) {
