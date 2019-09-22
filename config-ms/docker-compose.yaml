@@ -1,0 +1,20 @@
+version: "3.6"
+
+services:
+  rabbitmq:
+    container_name: rabbitmq
+    image: 'rabbitmq:management'
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  config-ms:
+    container_name: config-server
+    image: costanzopa/config-ms
+    ports:
+      - "8088:8088"
+    depends_on:
+      - rabbitmq
