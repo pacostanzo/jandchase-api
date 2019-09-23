@@ -1,0 +1,42 @@
+version: "3.6"
+
+services:
+  rabbitmq:
+    container_name: rabbitmq
+    image: 'rabbitmq:management'
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  config-ms:
+    container_name: config-ms
+    image: costanzopa/config-ms
+    ports:
+      - "8088:8088"
+    depends_on:
+      - rabbitmq
+
+  eureka-ms:
+    container_name: eureka-ms
+    image: costanzopa/eureka-ms
+    ports:
+      - "8761:8761"
+
+  gateway-ms:
+    container_name: gateway-ms
+    image: costanzopa/gateway-ms
+    ports:
+      - "8091:8091"
+    depends_on:
+      - config-ms
+      - eureka-ms
+
+  products-ms:
+    container_name: products-ms
+    image: costanzopa/products-ms
+    depends_on:
+      - config-ms
+      - eureka-ms
