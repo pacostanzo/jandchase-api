@@ -2,5 +2,22 @@ version: "3.6"
 
 services:
   products-ms:
-    container_name: products-ms
     image: costanzopa/products-ms
+    networks:
+      - products-ms-network
+    depends_on:
+      - users-ms-db
+
+  products-ms-db:
+    restart: always
+    image: mysql
+    networks:
+      - products-ms-network
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: products-ms-db
+    volumes:
+      - ./data:/var/lib/mysql
+
+networks:
+  products-ms-network:

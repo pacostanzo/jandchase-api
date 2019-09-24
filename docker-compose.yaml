@@ -52,15 +52,26 @@ services:
       - config-ms
       - eureka-ms
 
-  products-ms:
-    container_name: products-ms
-    image: costanzopa/products-ms
-    networks:
-      - jandchase_network
-    depends_on:
-      - config-ms
-      - eureka-ms
+    products-ms:
+      image: costanzopa/products-ms
+      networks:
+        - jandchase_network
+      depends_on:
+        - config-ms
+        - eureka-ms
+        - products-ms-db
+        - gateway-ms
 
+    products-ms-db:
+      restart: always
+      image: mysql
+      networks:
+        - jandchase_network
+      environment:
+        MYSQL_ROOT_PASSWORD: password
+        MYSQL_DATABASE: products-ms-db
+      volumes:
+        - ./data:/var/lib/mysql
 
 networks:
   jandchase_network:
