@@ -12,7 +12,7 @@ services:
       - "15672:15672"
 
   config-ms:
-    container_name: config-server
+    container_name: config-ms
     image: costanzopa/config-ms
     ports:
       - "8088:8088"
