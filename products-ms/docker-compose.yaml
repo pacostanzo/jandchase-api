@@ -1,23 +1,24 @@
 version: "3.6"
 
 services:
+
   products-ms:
     image: costanzopa/products-ms
-    networks:
-      - products-ms-network
+    container_name: products-ms
     depends_on:
-      - users-ms-db
+      - products-ms-db
 
   products-ms-db:
     restart: always
     image: mysql
-    networks:
-      - products-ms-network
+    container_name: products-ms-db
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: products-ms-db
     volumes:
-      - ./data:/var/lib/mysql
+      - './.data/conf:/etc/mysql/conf.d'
 
 networks:
-  products-ms-network:
+  default:
+    external:
+      name: configms_jandchase_network
