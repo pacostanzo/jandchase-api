@@ -8,7 +8,8 @@ public class ErrorMessage {
     private List<String> message;
     private String details;
 
-    public ErrorMessage(){}
+    public ErrorMessage() {
+    }
 
     public ErrorMessage(Date timestamp, List<String> message, String details) {
         this.timestamp = timestamp;

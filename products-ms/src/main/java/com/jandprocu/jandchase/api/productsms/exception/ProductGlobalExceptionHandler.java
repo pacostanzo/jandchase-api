@@ -35,12 +35,13 @@ public class ProductGlobalExceptionHandler extends ResponseEntityExceptionHandle
         return new ResponseEntity<>(errorMessage, new HttpHeaders(), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(ProductNotUpdatedException.class)
-    public final ResponseEntity<ErrorMessage> notUpdatedHandler(ProductNotUpdatedException ex, WebRequest request) {
+    @ExceptionHandler({ProductNotUpdatedException.class, IllegalArgumentException.class})
+    public final ResponseEntity<ErrorMessage> handleConflict(Throwable ex, WebRequest request) {
         List<String> message = new ArrayList<>();
         message.add(ex.getMessage());
         ErrorMessage errorMessage = new ErrorMessage(new Date(), message,
                 request.getDescription(false));
         return new ResponseEntity<>(errorMessage, new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
+
 }

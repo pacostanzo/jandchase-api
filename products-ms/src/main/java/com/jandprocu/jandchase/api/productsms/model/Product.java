@@ -6,17 +6,20 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Date;
+import java.util.Map;
 
 @Entity
-@Table(name="products")
+@Table(name = "products")
 public class Product implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable=false, unique=true, name="product_id")
+    @Column(nullable = false, unique = true, name = "product_id")
     @NotEmpty
     private String productId;
 
@@ -30,7 +33,7 @@ public class Product implements Serializable {
     @NotEmpty
     private String category;
 
-    @Column(precision=8, scale=2, nullable = false)
+    @Column(precision = 8, scale = 2, nullable = false)
     private double amount;
 
     @Column(nullable = false, length = 5)
@@ -38,11 +41,10 @@ public class Product implements Serializable {
     private String currency;
 
     @NotNull
-    @Column(name="created_at")
+    @Column(name = "created_at")
     @Temporal(TemporalType.DATE)
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date createdAt;
-
 
     public Long getId() {
         return id;
@@ -106,6 +108,41 @@ public class Product implements Serializable {
 
     public void setCurrency(String currency) {
         this.currency = currency;
+    }
+
+
+
+    public void setFieldValue(String fieldName, Object value) throws Exception {
+        Class productClass = this.getClass();
+        if (fieldName != null && !fieldName.isEmpty()) {
+            String methodName = "update" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+            Class[] cArg = new Class[1];
+            cArg[0] = Object.class;
+            Method method = productClass.getDeclaredMethod(methodName, cArg);
+            method.invoke(this, value);
+        }
+    }
+
+    private void updateName(Object value) {
+        this.setName(value.toString());
+    }
+
+    private void updateDesciption(Object value) {
+        this.setDescription(value.toString());
+    }
+
+    private void updateCategory(Object value) {
+        this.setCategory(value.toString());
+    }
+
+    private void updateAmount(Object value) {
+        String toString = value.toString();
+        Double doubleObject = Double.parseDouble(toString);
+        this.setAmount(doubleObject.doubleValue());
+    }
+
+    private void updateCurrency(Object value) {
+        this.setCurrency(value.toString());
     }
 
     private static final long serialVersionUID = 1L;

@@ -1,1 +1,3 @@
 INSERT INTO products (product_id, name, description, created_at, category, amount, currency) VALUES ('TEST_ID_1', 'Mac Book Air', 'NoteBook Mac Book Air', '2017-08-01', 'computer', 1000, 'USD');
+INSERT INTO products (product_id, name, description, created_at, category, amount, currency) VALUES ('TEST_ID_2', 'Mac Book Air', 'NoteBook Mac Book Air', '2017-08-01', 'computer', 1000, 'USD');
+INSERT INTO products (product_id, name, description, created_at, category, amount, currency) VALUES ('TEST_ID_3', 'Mac Book Air', 'NoteBook Mac Book Air', '2017-08-01', 'computer', 1000, 'USD');
