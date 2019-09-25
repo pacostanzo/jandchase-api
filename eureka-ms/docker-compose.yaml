@@ -2,7 +2,7 @@ version: "3.6"
 
 services:
   eureka-ms:
-    container_name: eureka-server
+    container_name: eureka-ms
     image: costanzopa/eureka-ms
     ports:
       - "8761:8761"

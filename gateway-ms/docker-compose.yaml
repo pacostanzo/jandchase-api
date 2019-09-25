@@ -2,7 +2,7 @@ version: "3.6"
 
 services:
   gateway-ms:
-    container_name: gateway-server
+    container_name: gateway-ms
     image: costanzopa/gateway-ms
     ports:
       - "8091:8091"
