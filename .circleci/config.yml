@@ -70,3 +70,12 @@ jobs:
         - run: docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
         # run tests!
         - run: mvn clean deploy
+
+workflows:
+  version: 2
+  build-test-and-deploy-products-ms:
+    jobs:
+      - build_products_ms
+      - deploy_products_ms:
+          requires:
+            - build_products_ms
