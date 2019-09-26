@@ -40,4 +40,4 @@ jobs:
           key: product-ms-{{ checksum "pom.xml" }}
 
       # run tests!
-      - run: mvn test
+      - run: mvn clean package
