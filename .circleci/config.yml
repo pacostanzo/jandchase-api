@@ -4,15 +4,10 @@
 #
 version: 2
 jobs:
-  build:
+  build_products_ms:
     docker:
       # specify the version you desire here
       - image: circleci/openjdk:8-jdk
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/postgres:9.4
 
     working_directory: ~/jandchase-api/products-ms
 
@@ -24,6 +19,7 @@ jobs:
       - checkout:
           path: ~/jandchase-api
 
+      - setup_remote_docker
       # Download and cache dependencies
       - restore_cache:
           keys:
@@ -39,4 +35,48 @@ jobs:
           key: product-ms-{{ checksum "pom.xml" }}
 
       # run tests!
-      - run: mvn test
+      - run: mvn clean package
+
+  deploy_products_ms:
+    docker:
+      # specify the version you desire here
+      - image: circleci/openjdk:8-jdk
+
+    working_directory: ~/jandchase-api/products-ms
+
+    environment:
+      # Customize the JVM maximum heap limit
+      MAVEN_OPTS: -Xmx3200m
+
+    steps:
+      - checkout:
+          path: ~/jandchase-api
+
+      - setup_remote_docker
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - products-ms-{{ checksum "pom.xml" }}
+            # fallback to using the latest cache if no exact match is found
+            - products-ms-
+
+      - run: mvn dependency:go-offline
+
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: product-ms-{{ checksum "pom.xml" }}
+
+      - run: docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+
+      # run tests!
+      - run: mvn clean deploy
+
+workflows:
+  version: 2
+  build-test-and-deploy-products-ms:
+    jobs:
+      - build_products_ms
+      - deploy_products_ms:
+          requires:
+            - build_products_ms
