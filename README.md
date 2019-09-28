@@ -1,6 +1,6 @@
 # Example of a full Microservice Architecture with Spring Boot, Spring Cloud, Zuul and Eureka.
 
-[![Build Status](https://circleci.com/g h/costanzopa/jandchase-api/tree/master.svg?style=svg)](https://circleci.com/gh/costanzopa/jandchase-api/tree/master)
+[![Build Status](https://circleci.com/gh/costanzopa/jandchase-api/tree/master.svg?style=svg)](https://circleci.com/gh/costanzopa/jandchase-api/tree/master)
 [![MIT Licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/costanzopa/jandchase-api/master/LICENSE.txt)
 
 Sample microservices application for managing products and shopping lists using:
