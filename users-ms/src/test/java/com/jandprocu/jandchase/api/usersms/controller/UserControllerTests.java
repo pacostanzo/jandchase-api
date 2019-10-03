@@ -75,7 +75,7 @@ public class UserControllerTests {
         //arrange
         Mockito.when(userService.createUser(any())).thenReturn(createResponse);
         //act
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/users")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createRequest)))
                 .andExpect(status().isCreated()).andReturn();
@@ -89,7 +89,7 @@ public class UserControllerTests {
     public void createUser_NotCreatedBecauseConflict() throws Exception {
         given(userService.createUser(any())).willThrow(new UserNotCreatedException());
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/users")
+        mockMvc.perform(MockMvcRequestBuilders.post("/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createRequest)))
                 .andExpect(status().isConflict());
@@ -101,7 +101,7 @@ public class UserControllerTests {
 
         given(userService.getUserByUserId(anyString())).willReturn(getUserResponse);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/users/asdefasfdsdfdscsa")
+        mockMvc.perform(MockMvcRequestBuilders.get("/asdefasfdsdfdscsa")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("firstName").value("Pablo"))
@@ -113,7 +113,7 @@ public class UserControllerTests {
     public void getUser_NotFound() throws Exception {
         given(userService.getUserByUserId(anyString())).willThrow(new UserNotFoundException());
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/users/pacostanzo@gmail.com")
+        mockMvc.perform(MockMvcRequestBuilders.get("/pacostanzo@gmail.com")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
@@ -128,7 +128,7 @@ public class UserControllerTests {
         updatedUser.setEmail("pacostanzo@gmail.com");
         given(userService.updateUserByUserId(anyString(), any())).willReturn(updatedUser);
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/users/asdefasfdsdfdscsa")
+        mockMvc.perform(MockMvcRequestBuilders.put("/asdefasfdsdfdscsa")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updatedUser)))
                 .andExpect(status().isOk())
@@ -143,7 +143,7 @@ public class UserControllerTests {
 
         given(userService.updateUserByUserId(anyString(), any())).willThrow(new UserNotFoundException());
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/users/pacostanzo@gmail.com")
+        mockMvc.perform(MockMvcRequestBuilders.put("/pacostanzo@gmail.com")
                 .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(updateRequest)))
                 .andExpect(status().isNotFound());
     }
@@ -153,7 +153,7 @@ public class UserControllerTests {
 
         given(userService.updateUserByUserId(anyString(), any())).willThrow(new UserNotUpdatedException());
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/users/pacostanzo@gmail.com")
+        mockMvc.perform(MockMvcRequestBuilders.put("/pacostanzo@gmail.com")
                 .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(updateRequest)))
                 .andExpect(status().isBadRequest());
     }
@@ -164,7 +164,7 @@ public class UserControllerTests {
         //arrange
         given(userService.deleteUserByUserId(anyString())).willReturn(new UserGetResponse());
         //act
-        mockMvc.perform(MockMvcRequestBuilders.delete("/users/asdefasfdsdfdscsa")
+        mockMvc.perform(MockMvcRequestBuilders.delete("/asdefasfdsdfdscsa")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
@@ -175,7 +175,7 @@ public class UserControllerTests {
         //arrange
         Mockito.when(userService.createUser(any())).thenReturn(createResponse);
         //act
-        mockMvc.perform(MockMvcRequestBuilders.post("/users")
+        mockMvc.perform(MockMvcRequestBuilders.post("/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(new UserCreateRequest())))
                 .andExpect(status().isBadRequest()).andReturn();

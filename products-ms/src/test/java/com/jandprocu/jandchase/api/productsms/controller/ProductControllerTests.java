@@ -81,7 +81,7 @@ public class ProductControllerTests {
         //arrange
         Mockito.when(productService.createProduct(any())).thenReturn(productResponse);
         //act
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/products")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(productRequest)))
                 .andExpect(status().isCreated()).andReturn();
@@ -96,7 +96,7 @@ public class ProductControllerTests {
     public void createProduct_NotCreatedBecauseConflict() throws Exception {
         given(productService.createProduct(any())).willThrow(new ProductNotCreatedException());
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/products")
+        mockMvc.perform(MockMvcRequestBuilders.post("/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(productRequest)))
                 .andExpect(status().isConflict());
@@ -108,7 +108,7 @@ public class ProductControllerTests {
         //arrange
         Mockito.when(productService.createProduct(any())).thenReturn(productResponse);
         //act
-        mockMvc.perform(MockMvcRequestBuilders.post("/products")
+        mockMvc.perform(MockMvcRequestBuilders.post("/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(new ProductRequest())))
                 .andExpect(status().isBadRequest()).andReturn();
@@ -119,7 +119,7 @@ public class ProductControllerTests {
 
         given(productService.getProductByProductId(anyString())).willReturn(productResponse);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/products/asdefasfdsdfdscsa")
+        mockMvc.perform(MockMvcRequestBuilders.get("/asdefasfdsdfdscsa")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("name").value("Dell Inspiron"))
@@ -131,7 +131,7 @@ public class ProductControllerTests {
     public void getProduct_NotFound() throws Exception {
         given(productService.getProductByProductId(anyString())).willThrow(new ProductNotFoundException());
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/products/pacostanzo@gmail.com")
+        mockMvc.perform(MockMvcRequestBuilders.get("/pacostanzo@gmail.com")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
@@ -145,7 +145,7 @@ public class ProductControllerTests {
         Mockito.when(productService.getAllProductsByProductId(any(), anyInt(), anyInt(), anyString())).thenReturn(productResponsePageable);
         //act
         ProductRequestByIds productRequestByIds = new ProductRequestByIds("PRODUCT_TD_1");
-        mockMvc.perform(MockMvcRequestBuilders.post("/products/getByIds")
+        mockMvc.perform(MockMvcRequestBuilders.post("/getByIds")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(productRequestByIds)))
                 .andExpect(status().isOk());
@@ -157,7 +157,7 @@ public class ProductControllerTests {
 
         given(productService.updateProductByProductId(anyString(), any())).willReturn(productUpdateResponse);
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/products/productId")
+        mockMvc.perform(MockMvcRequestBuilders.put("/productId")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(productRequest)))
                 .andExpect(status().isOk())
@@ -172,7 +172,7 @@ public class ProductControllerTests {
 
         given(productService.updateProductByProductId(anyString(), any())).willThrow(new ProductNotFoundException());
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/products/productId")
+        mockMvc.perform(MockMvcRequestBuilders.put("/productId")
                 .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(productRequest)))
                 .andExpect(status().isNotFound());
     }
@@ -182,7 +182,7 @@ public class ProductControllerTests {
 
         given(productService.updateProductByProductId(anyString(), any())).willThrow(new ProductNotUpdatedException());
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/products/productId")
+        mockMvc.perform(MockMvcRequestBuilders.put("/productId")
                 .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(productRequest)))
                 .andExpect(status().isBadRequest());
     }
@@ -192,7 +192,7 @@ public class ProductControllerTests {
         //arrange
         given(productService.deleteProductByProductId(anyString())).willReturn(new ProductResponse());
         //act
-        mockMvc.perform(MockMvcRequestBuilders.delete("/products/productId")
+        mockMvc.perform(MockMvcRequestBuilders.delete("/productId")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }

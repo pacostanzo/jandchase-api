@@ -77,7 +77,7 @@ public class ProductsMsApplicationTests {
 
         //act
         ResponseEntity<ProductResponse> response = testRestTemplate.postForEntity(
-                localHost + randomServerPort + "/products/", request, ProductResponse.class);
+                localHost + randomServerPort + "/", request, ProductResponse.class);
 
         //assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
@@ -91,7 +91,7 @@ public class ProductsMsApplicationTests {
     public void b_getProductByProductId_OK_ReturnsProductDetails() {
         //act
         ResponseEntity<ProductResponse> response = testRestTemplate.exchange(
-                localHost + randomServerPort + "/products/" + PRODUCT_ID, HttpMethod.GET, new HttpEntity<>(headers),
+                localHost + randomServerPort + "/" + PRODUCT_ID, HttpMethod.GET, new HttpEntity<>(headers),
                 ProductResponse.class);
 
         //assert
@@ -110,7 +110,7 @@ public class ProductsMsApplicationTests {
 
         //act
         ResponseEntity<ProductResponsePageable> response = testRestTemplate.exchange(
-                localHost + randomServerPort + "/products/getByIds", HttpMethod.POST, request,
+                localHost + randomServerPort + "/getByIds", HttpMethod.POST, request,
                 ProductResponsePageable.class);
 
         //assert
@@ -128,7 +128,7 @@ public class ProductsMsApplicationTests {
 
         //act
         ResponseEntity<ProductResponse> response = testRestTemplate.exchange(
-                localHost + randomServerPort + "/products/" + PRODUCT_ID,
+                localHost + randomServerPort + "/" + PRODUCT_ID,
                 HttpMethod.PUT, request, ProductResponse.class);
 
         //assert
@@ -153,7 +153,7 @@ public class ProductsMsApplicationTests {
 
         //act
         ResponseEntity<ProductResponse> response = testRestTemplate.exchange(
-                localHost + randomServerPort + "/products/" + PRODUCT_ID,
+                localHost + randomServerPort + "/" + PRODUCT_ID,
                 HttpMethod.PATCH, request, ProductResponse.class);
 
         //assert
@@ -165,7 +165,7 @@ public class ProductsMsApplicationTests {
     @Test
     public void f_deleteProductByProductId_OK() {
         //act
-        testRestTemplate.exchange(localHost + randomServerPort + "/products/" + PRODUCT_ID,
+        testRestTemplate.exchange(localHost + randomServerPort + "/" + PRODUCT_ID,
                 HttpMethod.DELETE, new HttpEntity<>(headers), String.class)
                 .getStatusCode().equals(HttpStatus.OK);
     }

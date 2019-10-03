@@ -73,7 +73,7 @@ public class UsersMsApplicationTests {
         //act
         ResponseEntity<UserCreateResponse> response = restTemplate.postForEntity(
                 localHost + randomServerPort +
-                        "/users/", request, UserCreateResponse.class);
+                        "/", request, UserCreateResponse.class);
 
         //assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
@@ -88,7 +88,7 @@ public class UsersMsApplicationTests {
     public void b_getUserByUserId_OK_ReturnsUserDetails() throws Exception {
         //act
         ResponseEntity<UserGetResponse> entity = restTemplate.exchange(
-                localHost + randomServerPort + "/users/" + userId,
+                localHost + randomServerPort + "/" + userId,
                 HttpMethod.GET, new HttpEntity<>(headers),
                 UserGetResponse.class);
 
@@ -107,7 +107,7 @@ public class UsersMsApplicationTests {
 
         //act
         ResponseEntity<UserUpdateResponse> entity = restTemplate.exchange(
-                localHost + randomServerPort + "/users/" + userId,
+                localHost + randomServerPort + "/" + userId,
                 HttpMethod.PUT, request, UserUpdateResponse.class);
 
         //assert
@@ -121,7 +121,7 @@ public class UsersMsApplicationTests {
     @Test
     public void d_deleteUserByUserId_OK() throws Exception {
         //act
-        restTemplate.exchange(localHost + randomServerPort + "/users/" + userId,
+        restTemplate.exchange(localHost + randomServerPort + "/" + userId,
                 HttpMethod.DELETE, new HttpEntity<Object>(headers), String.class)
                 .getStatusCode().equals(HttpStatus.OK);
     }
