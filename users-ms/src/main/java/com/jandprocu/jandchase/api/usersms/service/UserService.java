@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Service
@@ -34,6 +35,7 @@ public class UserService implements IUserService {
 
         User userEntity = modelMapper.map(userRequest, User.class);
         userEntity.setUserId(UUID.randomUUID().toString());
+        userEntity.setCreatedAt(new Date());
 
         try {
             userRepository.save(userEntity);
