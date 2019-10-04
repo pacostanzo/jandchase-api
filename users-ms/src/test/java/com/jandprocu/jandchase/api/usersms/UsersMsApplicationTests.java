@@ -4,6 +4,7 @@ import com.jandprocu.jandchase.api.usersms.rest.request.UserCreateRequest;
 import com.jandprocu.jandchase.api.usersms.rest.request.UserRequest;
 import com.jandprocu.jandchase.api.usersms.rest.request.UserUpdateRequest;
 import com.jandprocu.jandchase.api.usersms.rest.response.UserCreateResponse;
+import com.jandprocu.jandchase.api.usersms.rest.response.UserGetOAuthResponse;
 import com.jandprocu.jandchase.api.usersms.rest.response.UserGetResponse;
 import com.jandprocu.jandchase.api.usersms.rest.response.UserUpdateResponse;
 import org.junit.Before;
@@ -99,9 +100,39 @@ public class UsersMsApplicationTests {
         assertThat(entity.getBody().getEmail()).isEqualTo("costanzopa@gmail.com");
     }
 
+    @Test
+    public void c_getUserByUserName_OK_ReturnsUserDetails() throws Exception {
+        //act
+        ResponseEntity<UserGetResponse> entity = restTemplate.exchange(
+                localHost + randomServerPort + "/getByUserName/costanzopa",
+                HttpMethod.GET, new HttpEntity<>(headers),
+                UserGetResponse.class);
+
+        //assert
+        assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(entity.getBody().getFirstName()).isEqualTo("Pablo");
+        assertThat(entity.getBody().getLastName()).isEqualTo("Costanzo");
+        assertThat(entity.getBody().getEmail()).isEqualTo("costanzopa@gmail.com");
+    }
 
     @Test
-    public void c_updateUserByUserId_OK_ReturnsUserUpdateDetails() throws Exception {
+    public void d_getUserByUserNameOAuth_OK_ReturnsUserDetails() throws Exception {
+        //act
+        ResponseEntity<UserGetOAuthResponse> entity = restTemplate.exchange(
+                localHost + randomServerPort + "/getByUserNameOAuth/costanzopa",
+                HttpMethod.GET, new HttpEntity<>(headers),
+                UserGetOAuthResponse.class);
+
+        //assert
+        assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(entity.getBody().getFirstName()).isEqualTo("Pablo");
+        assertThat(entity.getBody().getLastName()).isEqualTo("Costanzo");
+        assertThat(entity.getBody().getEmail()).isEqualTo("costanzopa@gmail.com");
+        assertThat(entity.getBody().getPassword()).isEqualTo("12345678");
+    }
+
+    @Test
+    public void e_updateUserByUserId_OK_ReturnsUserUpdateDetails() throws Exception {
         //arrange
         HttpEntity<UserRequest> request = new HttpEntity<>(updateRequest, headers);
 
@@ -119,7 +150,7 @@ public class UsersMsApplicationTests {
 
 
     @Test
-    public void d_deleteUserByUserId_OK() throws Exception {
+    public void f_deleteUserByUserId_OK() throws Exception {
         //act
         restTemplate.exchange(localHost + randomServerPort + "/" + userId,
                 HttpMethod.DELETE, new HttpEntity<Object>(headers), String.class)

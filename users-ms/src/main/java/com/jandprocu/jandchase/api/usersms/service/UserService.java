@@ -7,6 +7,7 @@ import com.jandprocu.jandchase.api.usersms.model.User;
 import com.jandprocu.jandchase.api.usersms.repository.UserRepository;
 import com.jandprocu.jandchase.api.usersms.rest.UserRest;
 import com.jandprocu.jandchase.api.usersms.rest.response.UserCreateResponse;
+import com.jandprocu.jandchase.api.usersms.rest.response.UserGetOAuthResponse;
 import com.jandprocu.jandchase.api.usersms.rest.response.UserGetResponse;
 import com.jandprocu.jandchase.api.usersms.rest.response.UserUpdateResponse;
 import org.modelmapper.ModelMapper;
@@ -36,6 +37,7 @@ public class UserService implements IUserService {
         User userEntity = modelMapper.map(userRequest, User.class);
         userEntity.setUserId(UUID.randomUUID().toString());
         userEntity.setCreatedAt(new Date());
+        userEntity.setEnable(Boolean.TRUE);
 
         try {
             userRepository.save(userEntity);
@@ -54,6 +56,26 @@ public class UserService implements IUserService {
         User userEntity = getUserEntityByUserId(userId);
         UserGetResponse getUserResponse = this.modelMapper.map(userEntity, UserGetResponse.class);
         return getUserResponse;
+    }
+
+    @Override
+    public UserGetResponse getUserByUserName(String userName) {
+        User userEntity = getUserEntityByUserName(userName);
+        UserGetResponse getUserResponse = this.modelMapper.map(userEntity, UserGetResponse.class);
+        return getUserResponse;
+    }
+
+    @Override
+    public UserGetOAuthResponse getUserByUserOAuthName(String userName) {
+        User userEntity = getUserEntityByUserName(userName);
+        UserGetOAuthResponse getUserOAuthResponse = this.modelMapper.map(userEntity, UserGetOAuthResponse.class);
+        return getUserOAuthResponse;
+    }
+
+    private User getUserEntityByUserName(String userName) {
+        User userEntity = this.userRepository.findByUserName(userName);
+        if (userEntity == null) throw new UserNotFoundException("User " + userName + " not found");
+        return userEntity;
     }
 
     //TODO: Refactor update Method: Not need to send the full object
@@ -78,6 +100,8 @@ public class UserService implements IUserService {
         UserGetResponse deleteUser = this.modelMapper.map(userEntity, UserGetResponse.class);
         return deleteUser;
     }
+
+
 
     private User updateUserEntity(UserRest userUpdate, User userEntity) {
         userEntity.setFirstName(userUpdate.getFirstName());

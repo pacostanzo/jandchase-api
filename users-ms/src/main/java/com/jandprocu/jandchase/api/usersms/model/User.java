@@ -41,6 +41,10 @@ public class User implements Serializable {
 
     private Boolean enable;
 
+    @Column(nullable = false, length = 50)
+    @NotEmpty
+    private String password;
+
     @NotNull
     @Column(name = "created_at")
     @Temporal(TemporalType.DATE)
@@ -123,5 +127,13 @@ public class User implements Serializable {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

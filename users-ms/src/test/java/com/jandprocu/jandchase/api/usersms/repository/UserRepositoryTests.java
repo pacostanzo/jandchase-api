@@ -34,6 +34,7 @@ public class UserRepositoryTests {
         toStoreUser.setLastName("Costanzo");
         toStoreUser.setEmail("costanzopa@gmail.com");
         toStoreUser.setUserName("costanzopa");
+        toStoreUser.setPassword("12345678");
         toStoreUser.setCreatedAt(new Date());
 
         User savedUser = entityManager.persistAndFlush(toStoreUser);

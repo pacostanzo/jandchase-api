@@ -3,6 +3,7 @@ package com.jandprocu.jandchase.api.usersms.controller;
 import com.jandprocu.jandchase.api.usersms.rest.request.UserCreateRequest;
 import com.jandprocu.jandchase.api.usersms.rest.request.UserUpdateRequest;
 import com.jandprocu.jandchase.api.usersms.rest.response.UserCreateResponse;
+import com.jandprocu.jandchase.api.usersms.rest.response.UserGetOAuthResponse;
 import com.jandprocu.jandchase.api.usersms.rest.response.UserGetResponse;
 import com.jandprocu.jandchase.api.usersms.rest.response.UserUpdateResponse;
 import com.jandprocu.jandchase.api.usersms.service.IUserService;
@@ -36,6 +37,19 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userResponse);
     }
 
+    @GetMapping(path = "/getByUserName/{userName}",
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    public ResponseEntity<UserGetResponse> getByUserName(@PathVariable String userName) {
+        UserGetResponse userResponse = userService.getUserByUserName(userName);
+        return ResponseEntity.status(HttpStatus.OK).body(userResponse);
+    }
+
+    @GetMapping(path = "/getByUserNameOAuth/{userName}",
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    public ResponseEntity<UserGetOAuthResponse> getByUserNameOAuth(@PathVariable String userName) {
+        UserGetOAuthResponse userResponse = userService.getUserByUserOAuthName(userName);
+        return ResponseEntity.status(HttpStatus.OK).body(userResponse);
+    }
 
     @PutMapping(path = "/{userId}",
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
