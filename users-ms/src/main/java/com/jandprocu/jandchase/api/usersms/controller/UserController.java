@@ -23,7 +23,7 @@ public class UserController {
     private IUserService userService;
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
-            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+                 produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<UserCreateResponse> createUser(@Valid @RequestBody UserCreateRequest createRequest) {
         UserCreateResponse createdUser = userService.createUser(createRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);

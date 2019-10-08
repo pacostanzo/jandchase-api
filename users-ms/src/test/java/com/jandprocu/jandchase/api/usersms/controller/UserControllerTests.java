@@ -123,6 +123,7 @@ public class UserControllerTests {
     public void updateUser_ShouldReturnUserUpdated() throws Exception {
 
         UserUpdateResponse updatedUser = new UserUpdateResponse();
+        updatedUser.setUserName("costanzopa");
         updatedUser.setFirstName("Agustin");
         updatedUser.setLastName("Costanzo");
         updatedUser.setEmail("pacostanzo@gmail.com");

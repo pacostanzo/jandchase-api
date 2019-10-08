@@ -6,6 +6,8 @@ import javax.validation.constraints.Size;
 
 public abstract class UserRest {
 
+    @NotNull(message = "UserName cannot be missing or empty")
+    @Size(min = 2, message = "UserName must not be less than 2 characters")
     private String userName;
 
     @NotNull(message = "First name cannot be missing or empty")

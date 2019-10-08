@@ -3,6 +3,8 @@ package com.jandprocu.jandchase.api.usersms.service;
 import com.jandprocu.jandchase.api.usersms.exception.UserNotCreatedException;
 import com.jandprocu.jandchase.api.usersms.exception.UserNotFoundException;
 import com.jandprocu.jandchase.api.usersms.exception.UserNotUpdatedException;
+import com.jandprocu.jandchase.api.usersms.model.Role;
+import com.jandprocu.jandchase.api.usersms.repository.RoleRepository;
 import com.jandprocu.jandchase.api.usersms.rest.UserRest;
 import com.jandprocu.jandchase.api.usersms.rest.request.UserCreateRequest;
 import com.jandprocu.jandchase.api.usersms.model.User;
@@ -31,6 +33,9 @@ public class UserServiceTests {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private RoleRepository roleRepository;
+
     private IUserService userService;
 
     private UserCreateRequest userRequest;
@@ -41,7 +46,7 @@ public class UserServiceTests {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
-        userService = new UserService(userRepository);
+        userService = new UserService(userRepository, roleRepository);
         userRequest = new UserCreateRequest();
         userRequest.setUserName("costanzopa");
         userRequest.setFirstName("Pablo");
@@ -54,6 +59,9 @@ public class UserServiceTests {
 
     @Test
     public void createUser_OK_ReturnsUserInfo() {
+        Role role = new Role();
+        role.setName("ROLE_USER");
+        given(roleRepository.findByName(anyString())).willReturn(role);
 
         given(userRepository.save(any())).willReturn(new User());
 
@@ -68,6 +76,9 @@ public class UserServiceTests {
 
     @Test(expected = UserNotCreatedException.class)
     public void createUser_WhenUserWasCreated() throws DataAccessException {
+        Role role = new Role();
+        role.setName("ROLE_USER");
+        given(roleRepository.findByName(anyString())).willReturn(role);
         given(userRepository.save(any())).willThrow(new DuplicateKeyException("Test Exception"));
         userService.createUser(userRequest);
     }

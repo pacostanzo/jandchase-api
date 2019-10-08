@@ -1,9 +1,12 @@
 package com.jandprocu.jandchase.api.usersms.service;
 
+import com.jandprocu.jandchase.api.usersms.exception.RoleNotFoundException;
 import com.jandprocu.jandchase.api.usersms.exception.UserNotCreatedException;
 import com.jandprocu.jandchase.api.usersms.exception.UserNotFoundException;
 import com.jandprocu.jandchase.api.usersms.exception.UserNotUpdatedException;
+import com.jandprocu.jandchase.api.usersms.model.Role;
 import com.jandprocu.jandchase.api.usersms.model.User;
+import com.jandprocu.jandchase.api.usersms.repository.RoleRepository;
 import com.jandprocu.jandchase.api.usersms.repository.UserRepository;
 import com.jandprocu.jandchase.api.usersms.rest.UserRest;
 import com.jandprocu.jandchase.api.usersms.rest.response.UserCreateResponse;
@@ -16,17 +19,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.UUID;
 
 @Service
 public class UserService implements IUserService {
+    private final String ROLE_USER = "ROLE_USER";
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private ModelMapper modelMapper;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
         this.modelMapper = new ModelMapper();
         this.modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
     }
@@ -39,6 +46,8 @@ public class UserService implements IUserService {
         userEntity.setCreatedAt(new Date());
         userEntity.setEnable(Boolean.TRUE);
 
+        addRole(userEntity, ROLE_USER);
+
         try {
             userRepository.save(userEntity);
         } catch (DataAccessException exception) {
@@ -49,6 +58,14 @@ public class UserService implements IUserService {
 
         return userResponse;
 
+    }
+
+    private void addRole(User user, String roleName) {
+        Role role = this.roleRepository.findByName(roleName);
+        if (role == null) {
+            throw new RoleNotFoundException("Role " + roleName + " not found");
+        }
+        user.setRoles(Arrays.asList(role));
     }
 
     @Override
@@ -102,8 +119,8 @@ public class UserService implements IUserService {
     }
 
 
-
     private User updateUserEntity(UserRest userUpdate, User userEntity) {
+        userEntity.setUserName(userUpdate.getUserName());
         userEntity.setFirstName(userUpdate.getFirstName());
         userEntity.setLastName(userUpdate.getLastName());
         userEntity.setEmail(userUpdate.getEmail());

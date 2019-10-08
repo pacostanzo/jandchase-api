@@ -25,6 +25,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import java.util.Date;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
@@ -41,7 +43,6 @@ public class UsersMsApplicationTests {
     @Value("${local.server.url}")
     String localHost;
 
-    private static String userId;
     private UserCreateRequest createRequest;
     private UserRequest updateRequest;
     private MultiValueMap<String, String> headers;
@@ -50,24 +51,24 @@ public class UsersMsApplicationTests {
     @Before
     public void setUp() {
         createRequest = new UserCreateRequest();
-        createRequest.setUserName("costanzopa");
-        createRequest.setFirstName("Pablo");
-        createRequest.setLastName("Costanzo");
-        createRequest.setEmail("costanzopa@gmail.com");
+        createRequest.setUserName("THIRD_USER");
+        createRequest.setFirstName("ThirdUser");
+        createRequest.setLastName("ThirdUser");
+        createRequest.setEmail("third_user@email.test");
         createRequest.setPassword("12345678");
 
         updateRequest = new UserUpdateRequest();
-        updateRequest.setUserName("costanzopa");
-        updateRequest.setFirstName("Agustin");
-        updateRequest.setLastName("Costanzo");
-        updateRequest.setEmail("pcostanzo@gmail.com");
+        updateRequest.setUserName("SECOND_USER");
+        updateRequest.setFirstName("UpadateSecondUser");
+        updateRequest.setLastName("UpadateSecondUser");
+        updateRequest.setEmail("update_second_user@email.test");
 
         headers = new LinkedMultiValueMap<>();
         headers.add("Content-Type", "application/json");
     }
 
     @Test
-    public void a_createUser_OK_ReturnsUserDetails() throws Exception {
+    public void createUser_OK_ReturnsUserDetails() {
         //arrange
         HttpEntity<UserCreateRequest> request = new HttpEntity<>(createRequest);
 
@@ -78,82 +79,82 @@ public class UsersMsApplicationTests {
 
         //assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(response.getBody().getUserName()).isEqualTo("costanzopa");
-        assertThat(response.getBody().getFirstName()).isEqualTo("Pablo");
-        assertThat(response.getBody().getLastName()).isEqualTo("Costanzo");
-        assertThat(response.getBody().getEmail()).isEqualTo("costanzopa@gmail.com");
-        userId = response.getBody().getUserId();
+        assertThat(response.getBody().getUserName()).isEqualTo("THIRD_USER");
+        assertThat(response.getBody().getFirstName()).isEqualTo("ThirdUser");
+        assertThat(response.getBody().getLastName()).isEqualTo("ThirdUser");
+        assertThat(response.getBody().getEmail()).isEqualTo("third_user@email.test");
     }
 
     @Test
-    public void b_getUserByUserId_OK_ReturnsUserDetails() throws Exception {
+    public void getUserByUserId_OK_ReturnsUserDetails() {
         //act
         ResponseEntity<UserGetResponse> entity = restTemplate.exchange(
-                localHost + randomServerPort + "/" + userId,
+                localHost + randomServerPort + "/SECOND_USER_ID",
                 HttpMethod.GET, new HttpEntity<>(headers),
                 UserGetResponse.class);
 
         //assert
         assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(entity.getBody().getFirstName()).isEqualTo("Pablo");
-        assertThat(entity.getBody().getLastName()).isEqualTo("Costanzo");
-        assertThat(entity.getBody().getEmail()).isEqualTo("costanzopa@gmail.com");
+        assertThat(entity.getBody().getFirstName()).isEqualTo("SecondUser");
+        assertThat(entity.getBody().getLastName()).isEqualTo("SecondUser");
+        assertThat(entity.getBody().getEmail()).isEqualTo("second_user@email.test");
     }
 
     @Test
-    public void c_getUserByUserName_OK_ReturnsUserDetails() throws Exception {
+    public void getUserByUserName_OK_ReturnsUserDetails() {
         //act
         ResponseEntity<UserGetResponse> entity = restTemplate.exchange(
-                localHost + randomServerPort + "/getByUserName/costanzopa",
+                localHost + randomServerPort + "/getByUserName/SECOND_USER",
                 HttpMethod.GET, new HttpEntity<>(headers),
                 UserGetResponse.class);
 
         //assert
         assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(entity.getBody().getFirstName()).isEqualTo("Pablo");
-        assertThat(entity.getBody().getLastName()).isEqualTo("Costanzo");
-        assertThat(entity.getBody().getEmail()).isEqualTo("costanzopa@gmail.com");
+        assertThat(entity.getBody().getFirstName()).isEqualTo("SecondUser");
+        assertThat(entity.getBody().getLastName()).isEqualTo("SecondUser");
+        assertThat(entity.getBody().getEmail()).isEqualTo("second_user@email.test");
     }
 
     @Test
-    public void d_getUserByUserNameOAuth_OK_ReturnsUserDetails() throws Exception {
+    public void getUserByUserNameOAuth_OK_ReturnsUserDetails() {
         //act
         ResponseEntity<UserGetOAuthResponse> entity = restTemplate.exchange(
-                localHost + randomServerPort + "/getByUserNameOAuth/costanzopa",
+                localHost + randomServerPort + "/getByUserNameOAuth/SECOND_USER",
                 HttpMethod.GET, new HttpEntity<>(headers),
                 UserGetOAuthResponse.class);
 
         //assert
         assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(entity.getBody().getFirstName()).isEqualTo("Pablo");
-        assertThat(entity.getBody().getLastName()).isEqualTo("Costanzo");
-        assertThat(entity.getBody().getEmail()).isEqualTo("costanzopa@gmail.com");
+        assertThat(entity.getBody().getFirstName()).isEqualTo("SecondUser");
+        assertThat(entity.getBody().getLastName()).isEqualTo("SecondUser");
+        assertThat(entity.getBody().getEmail()).isEqualTo("second_user@email.test");
         assertThat(entity.getBody().getPassword()).isEqualTo("12345678");
+        assertThat(entity.getBody().getRoles().isEmpty()).isEqualTo(false);
     }
 
     @Test
-    public void e_updateUserByUserId_OK_ReturnsUserUpdateDetails() throws Exception {
+    public void updateUserByUserId_OK_ReturnsUserUpdateDetails() {
         //arrange
         HttpEntity<UserRequest> request = new HttpEntity<>(updateRequest, headers);
 
         //act
         ResponseEntity<UserUpdateResponse> entity = restTemplate.exchange(
-                localHost + randomServerPort + "/" + userId,
+                localHost + randomServerPort + "/SECOND_USER_ID",
                 HttpMethod.PUT, request, UserUpdateResponse.class);
 
         //assert
         assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(entity.getBody().getFirstName()).isEqualTo("Agustin");
-        assertThat(entity.getBody().getLastName()).isEqualTo("Costanzo");
-        assertThat(entity.getBody().getEmail()).isEqualTo("pcostanzo@gmail.com");
+        assertThat(entity.getBody().getFirstName()).isEqualTo("UpadateSecondUser");
+        assertThat(entity.getBody().getLastName()).isEqualTo("UpadateSecondUser");
+        assertThat(entity.getBody().getEmail()).isEqualTo("update_second_user@email.test");
     }
 
 
     @Test
-    public void f_deleteUserByUserId_OK() throws Exception {
+    public void f_deleteUserByUserId_OK() {
         //act
-        restTemplate.exchange(localHost + randomServerPort + "/" + userId,
-                HttpMethod.DELETE, new HttpEntity<Object>(headers), String.class)
+        restTemplate.exchange(localHost + randomServerPort + "/FIRST_USER_ID",
+                HttpMethod.DELETE, new HttpEntity<>(headers), String.class)
                 .getStatusCode().equals(HttpStatus.OK);
     }
 
