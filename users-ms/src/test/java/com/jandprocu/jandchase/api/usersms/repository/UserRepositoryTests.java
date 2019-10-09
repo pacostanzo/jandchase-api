@@ -29,13 +29,14 @@ public class UserRepositoryTests {
     public void getByUserId_OK_ReturnsUserDetails() {
 
         User toStoreUser = new User();
-        toStoreUser.setFirstName("Pablo");
+        toStoreUser.setFirstName("SixthUser");
         toStoreUser.setUserId(String.valueOf(UUID.randomUUID()));
-        toStoreUser.setLastName("Costanzo");
-        toStoreUser.setEmail("costanzopa@gmail.com");
-        toStoreUser.setUserName("costanzopa");
+        toStoreUser.setLastName("SixthUser");
+        toStoreUser.setEmail("sixth_user@email.test");
+        toStoreUser.setUserName("SIXTH_USER");
         toStoreUser.setPassword("12345678");
         toStoreUser.setCreatedAt(new Date());
+        toStoreUser.setEnable(Boolean.TRUE);
 
         User savedUser = entityManager.persistAndFlush(toStoreUser);
         User user = repository.findByUserId(toStoreUser.getUserId());
@@ -43,5 +44,23 @@ public class UserRepositoryTests {
         assertThat(user.getFirstName()).isEqualTo(savedUser.getFirstName());
     }
 
+    @Test
+    public void getByUserName_OK_ReturnsUserDetails() {
+
+        User toStoreUser = new User();
+        toStoreUser.setFirstName("SeventhUser");
+        toStoreUser.setUserId(String.valueOf(UUID.randomUUID()));
+        toStoreUser.setLastName("SeventhUser");
+        toStoreUser.setEmail("seventh_user@email.test");
+        toStoreUser.setUserName("SEVENTH_USER");
+        toStoreUser.setPassword("12345678");
+        toStoreUser.setCreatedAt(new Date());
+        toStoreUser.setEnable(Boolean.TRUE);
+
+        User savedUser = entityManager.persistAndFlush(toStoreUser);
+        User user = repository.findByUserName(toStoreUser.getUserName());
+
+        assertThat(user.getFirstName()).isEqualTo(savedUser.getFirstName());
+    }
 }
 

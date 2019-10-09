@@ -6,6 +6,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -56,6 +57,10 @@ public class User implements Serializable {
                inverseJoinColumns= @JoinColumn(name = "role_id"),
                uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id","role_id"})})
     private List<Role> roles;
+
+    public User() {
+        this.roles = new ArrayList<>();
+    }
 
     public long getId() {
         return id;

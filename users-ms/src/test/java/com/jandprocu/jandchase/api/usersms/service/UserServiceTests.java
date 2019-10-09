@@ -1,18 +1,16 @@
 package com.jandprocu.jandchase.api.usersms.service;
 
+import com.jandprocu.jandchase.api.usersms.exception.RoleNotFoundException;
 import com.jandprocu.jandchase.api.usersms.exception.UserNotCreatedException;
 import com.jandprocu.jandchase.api.usersms.exception.UserNotFoundException;
-import com.jandprocu.jandchase.api.usersms.exception.UserNotUpdatedException;
 import com.jandprocu.jandchase.api.usersms.model.Role;
 import com.jandprocu.jandchase.api.usersms.repository.RoleRepository;
 import com.jandprocu.jandchase.api.usersms.rest.UserRest;
 import com.jandprocu.jandchase.api.usersms.rest.request.UserCreateRequest;
 import com.jandprocu.jandchase.api.usersms.model.User;
-import com.jandprocu.jandchase.api.usersms.rest.request.UserUpdateRequest;
-import com.jandprocu.jandchase.api.usersms.rest.request.UserRequest;
-import com.jandprocu.jandchase.api.usersms.rest.response.UserGetResponse;
-import com.jandprocu.jandchase.api.usersms.rest.response.UserUpdateResponse;
 import com.jandprocu.jandchase.api.usersms.repository.UserRepository;
+import com.jandprocu.jandchase.api.usersms.rest.response.UserGetOAuthResponse;
+import com.jandprocu.jandchase.api.usersms.rest.response.UserGetResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,7 +36,7 @@ public class UserServiceTests {
 
     private IUserService userService;
 
-    private UserCreateRequest userRequest;
+    private UserCreateRequest createRequest;
     private User user;
 
     @Before
@@ -47,14 +45,14 @@ public class UserServiceTests {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
         userService = new UserService(userRepository, roleRepository);
-        userRequest = new UserCreateRequest();
-        userRequest.setUserName("costanzopa");
-        userRequest.setFirstName("Pablo");
-        userRequest.setLastName("Costanzo");
-        userRequest.setEmail("costanzopa@gmail.com");
-        userRequest.setPassword("12345678");
+        createRequest = new UserCreateRequest();
+        createRequest.setUserName("THIRD_USER");
+        createRequest.setFirstName("ThirdUser");
+        createRequest.setLastName("ThirdUser");
+        createRequest.setEmail("third_user@email.test");
+        createRequest.setPassword("12345678");
 
-        user = modelMapper.map(userRequest, User.class);
+        user = modelMapper.map(createRequest, User.class);
     }
 
     @Test
@@ -65,24 +63,29 @@ public class UserServiceTests {
 
         given(userRepository.save(any())).willReturn(new User());
 
-        UserRest userRest = userService.createUser(userRequest);
+        UserRest userRest = userService.createUser(createRequest);
 
-        assertThat(userRest.getFirstName()).isEqualTo("Pablo");
-        assertThat(userRest.getLastName()).isEqualTo("Costanzo");
-        assertThat(userRest.getEmail()).isEqualTo("costanzopa@gmail.com");
+        assertThat(userRest.getFirstName()).isEqualTo("ThirdUser");
+        assertThat(userRest.getLastName()).isEqualTo("ThirdUser");
+        assertThat(userRest.getEmail()).isEqualTo("third_user@email.test");
 
     }
 
 
     @Test(expected = UserNotCreatedException.class)
-    public void createUser_WhenUserWasCreated() throws DataAccessException {
+    public void createUser_WhenUserWasNotCreated() throws DataAccessException {
         Role role = new Role();
         role.setName("ROLE_USER");
         given(roleRepository.findByName(anyString())).willReturn(role);
         given(userRepository.save(any())).willThrow(new DuplicateKeyException("Test Exception"));
-        userService.createUser(userRequest);
+        userService.createUser(createRequest);
     }
 
+    @Test(expected = RoleNotFoundException.class)
+    public void createUser_WhenUserWasNotCreatedBecauseRoleNotFound() throws RoleNotFoundException {
+        given(roleRepository.findByName(anyString())).willReturn(null);
+        userService.createUser(createRequest);
+    }
 
     @Test
     public void getUserByUserId_OK_ReturnsUserInfo() {
@@ -91,9 +94,9 @@ public class UserServiceTests {
 
         UserGetResponse userRest = userService.getUserByUserId("userId");
 
-        assertThat(userRest.getFirstName()).isEqualTo("Pablo");
-        assertThat(userRest.getLastName()).isEqualTo("Costanzo");
-        assertThat(userRest.getEmail()).isEqualTo("costanzopa@gmail.com");
+        assertThat(userRest.getFirstName()).isEqualTo("ThirdUser");
+        assertThat(userRest.getLastName()).isEqualTo("ThirdUser");
+        assertThat(userRest.getEmail()).isEqualTo("third_user@email.test");
 
     }
 
@@ -103,42 +106,27 @@ public class UserServiceTests {
         userService.getUserByUserId(anyString());
     }
 
+
     @Test
-    public void updateUserByUserId_OK_ReturnsUserUpdated() {
+    public void getUserByUserName_OK_ReturnsUserInfo() {
 
-        UserRequest userUpdate = new UserUpdateRequest();
-        userUpdate.setFirstName("Agustin");
-        userUpdate.setLastName("Costanzo");
-        userUpdate.setEmail("pacostanzo@gmail.com");
+        given(userRepository.findByUserName(anyString())).willReturn(user);
 
-        given(userRepository.findByUserId(anyString())).willReturn(user);
+        UserGetOAuthResponse userRest = userService.getUserByUserName("userName");
 
-        UserUpdateResponse userRest = userService.updateUserByUserId("userId", userUpdate);
-
-        assertThat(userRest.getFirstName()).isEqualTo("Agustin");
-        assertThat(userRest.getLastName()).isEqualTo("Costanzo");
-        assertThat(userRest.getEmail()).isEqualTo("pacostanzo@gmail.com");
+        assertThat(userRest.getFirstName()).isEqualTo("ThirdUser");
+        assertThat(userRest.getLastName()).isEqualTo("ThirdUser");
+        assertThat(userRest.getEmail()).isEqualTo("third_user@email.test");
+        assertThat(userRest.getPassword()).isEqualTo("12345678");
 
     }
+
 
     @Test(expected = UserNotFoundException.class)
-    public void updateUserByUserId_WhenUserNotFound() {
-        given(userRepository.findByUserId(anyString())).willReturn(null);
-        userService.updateUserByUserId(anyString(), new UserUpdateRequest());
+    public void getUserByUserName_WhenUserNotFound() {
+        given(userRepository.findByUserName(anyString())).willReturn(null);
+        userService.getUserByUserName(anyString());
     }
-
-    @Test(expected = UserNotUpdatedException.class)
-    public void updateUserByUserId_WhenUserCouldNotUpdate() {
-
-        UserRequest updateRequest = new UserUpdateRequest();
-        updateRequest.setLastName("Costanzo");
-        updateRequest.setEmail("costanzopha@gmail.com");
-
-        given(userRepository.findByUserId(anyString())).willReturn(user);
-        given(userRepository.save(any())).willThrow(new DuplicateKeyException("Test Exception"));
-        userService.updateUserByUserId(anyString(), updateRequest);
-    }
-
 
     @Test
     public void deleteUserByUserId_OK_ReturnsUserDeleted() {
@@ -147,9 +135,9 @@ public class UserServiceTests {
 
         UserGetResponse userRest = userService.deleteUserByUserId("userId");
 
-        assertThat(userRest.getFirstName()).isEqualTo("Pablo");
-        assertThat(userRest.getLastName()).isEqualTo("Costanzo");
-        assertThat(userRest.getEmail()).isEqualTo("costanzopa@gmail.com");
+        assertThat(userRest.getFirstName()).isEqualTo("ThirdUser");
+        assertThat(userRest.getLastName()).isEqualTo("ThirdUser");
+        assertThat(userRest.getEmail()).isEqualTo("third_user@email.test");
     }
 
 
@@ -158,5 +146,4 @@ public class UserServiceTests {
         given(userRepository.findByUserId(anyString())).willReturn(null);
         userService.deleteUserByUserId(anyString());
     }
-
 }

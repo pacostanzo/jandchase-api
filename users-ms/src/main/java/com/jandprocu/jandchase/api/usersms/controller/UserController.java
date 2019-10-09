@@ -1,11 +1,9 @@
 package com.jandprocu.jandchase.api.usersms.controller;
 
 import com.jandprocu.jandchase.api.usersms.rest.request.UserCreateRequest;
-import com.jandprocu.jandchase.api.usersms.rest.request.UserUpdateRequest;
 import com.jandprocu.jandchase.api.usersms.rest.response.UserCreateResponse;
 import com.jandprocu.jandchase.api.usersms.rest.response.UserGetOAuthResponse;
 import com.jandprocu.jandchase.api.usersms.rest.response.UserGetResponse;
-import com.jandprocu.jandchase.api.usersms.rest.response.UserUpdateResponse;
 import com.jandprocu.jandchase.api.usersms.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,16 +17,16 @@ import javax.validation.Valid;
 @RequestMapping
 public class UserController {
 
+
     @Autowired
     private IUserService userService;
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
-                 produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<UserCreateResponse> createUser(@Valid @RequestBody UserCreateRequest createRequest) {
         UserCreateResponse createdUser = userService.createUser(createRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
-
 
     @GetMapping(path = "/{userId}",
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
@@ -39,32 +37,15 @@ public class UserController {
 
     @GetMapping(path = "/getByUserName/{userName}",
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity<UserGetResponse> getByUserName(@PathVariable String userName) {
-        UserGetResponse userResponse = userService.getUserByUserName(userName);
+    public ResponseEntity<UserGetOAuthResponse> getUserOAuth(@PathVariable String userName) {
+        UserGetOAuthResponse userResponse = userService.getUserByUserName(userName);
         return ResponseEntity.status(HttpStatus.OK).body(userResponse);
     }
 
-    @GetMapping(path = "/getByUserNameOAuth/{userName}",
-            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity<UserGetOAuthResponse> getByUserNameOAuth(@PathVariable String userName) {
-        UserGetOAuthResponse userResponse = userService.getUserByUserOAuthName(userName);
-        return ResponseEntity.status(HttpStatus.OK).body(userResponse);
-    }
-
-    @PutMapping(path = "/{userId}",
-            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
-            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity<UserUpdateResponse> updateUser(@PathVariable String userId,
-                                                         @Valid @RequestBody UserUpdateRequest updateRequest) {
-        UserUpdateResponse updateResponse = userService.updateUserByUserId(userId, updateRequest);
-        return ResponseEntity.status(HttpStatus.OK).body(updateResponse);
-    }
 
     @DeleteMapping(path = "/{userId}")
     public ResponseEntity<UserGetResponse> deleteUser(@PathVariable String userId) {
         UserGetResponse deleteUser = userService.deleteUserByUserId(userId);
         return ResponseEntity.status(HttpStatus.OK).body(deleteUser);
     }
-
-
 }

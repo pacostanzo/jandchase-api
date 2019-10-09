@@ -54,8 +54,8 @@ public class UserGlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorMessage, new HttpHeaders(), HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler
-    public final ResponseEntity<ErrorMessage> notFoundHandler(UserNotFoundException ex, WebRequest request) {
+    @ExceptionHandler({UserNotFoundException.class, RoleNotFoundException.class})
+    public final ResponseEntity<ErrorMessage> notFoundHandler(RuntimeException ex, WebRequest request) {
         List<String> message = new ArrayList<>();
         message.add(ex.getMessage());
         ErrorMessage errorMessage = new ErrorMessage(new Date(), message,

@@ -41,4 +41,11 @@ public class Role implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        Role role = (Role) o;
+        return (this.getName() == role.getName());
+    }
+
 }
