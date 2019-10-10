@@ -3,7 +3,9 @@ package com.jandprocu.jandchase.api.usersms.controller;
 import com.jandprocu.jandchase.api.usersms.exception.RoleNotFoundException;
 import com.jandprocu.jandchase.api.usersms.exception.UserNotCreatedException;
 import com.jandprocu.jandchase.api.usersms.exception.UserNotFoundException;
+import com.jandprocu.jandchase.api.usersms.exception.UserNotUpdatedException;
 import com.jandprocu.jandchase.api.usersms.rest.request.UserCreateRequest;
+import com.jandprocu.jandchase.api.usersms.rest.request.UserUpdateRequest;
 import com.jandprocu.jandchase.api.usersms.rest.response.RoleResponse;
 import com.jandprocu.jandchase.api.usersms.rest.response.UserCreateResponse;
 import com.jandprocu.jandchase.api.usersms.rest.response.UserGetOAuthResponse;
@@ -27,8 +29,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -51,6 +56,7 @@ public class UserControllerTests {
     private UserCreateRequest createRequest;
     private UserCreateResponse createResponse;
     private UserGetResponse getUserResponse;
+    private UserGetResponse addRoleResponse;
     private UserGetOAuthResponse getOAuthResponse;
 
 
@@ -67,13 +73,18 @@ public class UserControllerTests {
         createRequest.setPassword("12345678");
 
         createResponse = modelMapper.map(createRequest, UserCreateResponse.class);
-        RoleResponse roleResponse = new RoleResponse();
-        roleResponse.setName("ROLE_USER");
-        roleResponse.setDescription("Role for common users.");
-        createResponse.setRoles(Arrays.asList(roleResponse));
+        RoleResponse roleUser = new RoleResponse();
+        roleUser.setName("ROLE_USER");
+        roleUser.setDescription("Role for common users.");
+        createResponse.setRoles(Arrays.asList(roleUser));
         getUserResponse = modelMapper.map(createResponse, UserGetResponse.class);
         getOAuthResponse = modelMapper.map(getUserResponse, UserGetOAuthResponse.class);
         getOAuthResponse.setPassword("12345678");
+        addRoleResponse = modelMapper.map(getUserResponse, UserGetResponse.class);
+        RoleResponse roleAdmin = new RoleResponse();
+        roleAdmin.setName("ROLE_ADMIN");
+        roleAdmin.setDescription("");
+        addRoleResponse.setRoles(Arrays.asList(roleUser,roleAdmin));
     }
 
     @Test
@@ -159,6 +170,43 @@ public class UserControllerTests {
                 .andExpect(status().isNotFound());
     }
 
+
+    @Test
+    public void updateUser_ShouldReturnUserUpdated() throws Exception {
+
+        given(userService.updateUserByUserId(anyString(), any())).willReturn(getUserResponse);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/update_user_id")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(getUserResponse)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("firstName").value("ThirdUser"))
+                .andExpect(jsonPath("lastName").value("ThirdUser"))
+                .andExpect(jsonPath("email").value("third_user@email.test"));
+    }
+
+
+    @Test
+    public void updateUser_NotFound() throws Exception {
+
+        given(userService.updateUserByUserId(anyString(), any())).willThrow(new UserNotFoundException());
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/update_user_id")
+                .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(createRequest)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void updateUser_BadRequest() throws Exception {
+
+        given(userService.updateUserByUserId(anyString(), any())).willThrow(new UserNotUpdatedException());
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/update_user_id")
+                .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(createRequest)))
+                .andExpect(status().isBadRequest());
+    }
+
+
     @Test
     public void deleteUser_ShouldDeleteTheUser() throws Exception {
         //arrange
@@ -167,5 +215,21 @@ public class UserControllerTests {
         mockMvc.perform(MockMvcRequestBuilders.delete("/asdefasfdsdfdscsa")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void addRoleToUser_ShouldReturnUserWithRoleAdded() throws Exception {
+        given(userService.addRolesByUserId(anyString(), any())).willReturn(addRoleResponse);
+        List<String> roles = Arrays.asList("ROLE_ADMIN");
+        System.out.println(addRoleResponse.getRoles());
+        mockMvc.perform(MockMvcRequestBuilders.post("/update_user_id/addRoles")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(roles)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("firstName").value("ThirdUser"))
+                .andExpect(jsonPath("lastName").value("ThirdUser"))
+                .andExpect(jsonPath("email").value("third_user@email.test"))
+                .andExpect(jsonPath("$.roles[0].name", is("ROLE_USER")))
+                .andExpect(jsonPath("$.roles[1].name", is("ROLE_ADMIN")));
     }
 }

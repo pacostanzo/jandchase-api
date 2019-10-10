@@ -21,6 +21,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -39,6 +40,7 @@ public class UsersMsApplicationTests {
     String localHost;
 
     private UserCreateRequest createRequest;
+    private UserUpdateRequest updateRequest;
     private MultiValueMap<String, String> headers;
 
 
@@ -50,6 +52,13 @@ public class UsersMsApplicationTests {
         createRequest.setLastName("ThirdUser");
         createRequest.setEmail("third_user@email.test");
         createRequest.setPassword("12345678");
+
+        updateRequest = new UserUpdateRequest();
+        updateRequest.setUserName("FIRST_USER");
+        updateRequest.setFirstName("FirstUser");
+        updateRequest.setLastName("FirstUser");
+        updateRequest.setEmail("first_update_user@email.test");
+        updateRequest.setEnable(Boolean.FALSE);
 
         headers = new LinkedMultiValueMap<>();
         headers.add("Content-Type", "application/json");
@@ -111,10 +120,64 @@ public class UsersMsApplicationTests {
 
 
     @Test
+    public void updateUserByUserId_OK_ReturnsUserUpdateDetails() {
+        //arrange
+        HttpEntity<UserRequest> request = new HttpEntity<>(updateRequest, headers);
+
+        //act
+        ResponseEntity<UserGetResponse> entity = restTemplate.exchange(
+                localHost + randomServerPort + "/FIRST_USER_ID",
+                HttpMethod.PUT, request, UserGetResponse.class);
+
+        //assert
+        assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(entity.getBody().getFirstName()).isEqualTo("FirstUser");
+        assertThat(entity.getBody().getLastName()).isEqualTo("FirstUser");
+        assertThat(entity.getBody().getEmail()).isEqualTo("first_update_user@email.test");
+        assertThat(entity.getBody().getEnable()).isFalse();
+    }
+
+    @Test
     public void deleteUserByUserId_OK() {
         //act
         restTemplate.exchange(localHost + randomServerPort + "/FIFTH_USER_ID",
                 HttpMethod.DELETE, new HttpEntity<>(headers), String.class)
                 .getStatusCode().equals(HttpStatus.OK);
+    }
+
+
+
+    @Test
+    public void addRoleToUser_OK() {
+        //arrange
+        List<String> roles = Arrays.asList("ROLE_ADMIN");
+        HttpEntity<List<String>> request = new HttpEntity<>(roles, headers);
+
+        //act
+        ResponseEntity<UserGetResponse> entity = restTemplate.exchange(
+                localHost + randomServerPort + "/FIRST_USER_ID/addRoles",
+                HttpMethod.POST, request, UserGetResponse.class);
+
+        //assert
+        assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(entity.getBody().getFirstName()).isEqualTo("FirstUser");
+        assertThat(entity.getBody().getLastName()).isEqualTo("FirstUser");
+        assertThat(entity.getBody().getRoles().size()).isEqualTo(2);
+    }
+
+    @Test
+    public void removeRoleToUser_OK() {
+        //arrange
+        List<String> roles = Arrays.asList("ROLE_USER");
+        HttpEntity<List<String>> request = new HttpEntity<>(roles, headers);
+
+        //act
+        ResponseEntity<UserGetResponse> entity = restTemplate.exchange(
+                localHost + randomServerPort + "/SECOND_USER_ID/removeRoles",
+                HttpMethod.DELETE, request, UserGetResponse.class);
+
+        //assert
+        assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(entity.getBody().getRoles().size()).isEqualTo(1);
     }
 }

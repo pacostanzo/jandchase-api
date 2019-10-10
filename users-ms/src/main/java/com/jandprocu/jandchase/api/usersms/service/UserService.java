@@ -3,14 +3,17 @@ package com.jandprocu.jandchase.api.usersms.service;
 import com.jandprocu.jandchase.api.usersms.exception.RoleNotFoundException;
 import com.jandprocu.jandchase.api.usersms.exception.UserNotCreatedException;
 import com.jandprocu.jandchase.api.usersms.exception.UserNotFoundException;
+import com.jandprocu.jandchase.api.usersms.exception.UserNotUpdatedException;
 import com.jandprocu.jandchase.api.usersms.model.Role;
 import com.jandprocu.jandchase.api.usersms.model.User;
 import com.jandprocu.jandchase.api.usersms.repository.RoleRepository;
 import com.jandprocu.jandchase.api.usersms.repository.UserRepository;
 import com.jandprocu.jandchase.api.usersms.rest.UserRest;
+import com.jandprocu.jandchase.api.usersms.rest.request.UserUpdateRequest;
 import com.jandprocu.jandchase.api.usersms.rest.response.UserCreateResponse;
 import com.jandprocu.jandchase.api.usersms.rest.response.UserGetOAuthResponse;
 import com.jandprocu.jandchase.api.usersms.rest.response.UserGetResponse;
+import com.jandprocu.jandchase.api.usersms.rest.response.UserResponse;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -76,12 +80,44 @@ public class UserService implements IUserService {
 
     @Override
     @Transactional
+    public UserGetResponse updateUserByUserId(String userId, UserRest userUpdate) {
+        User userEntity = getUserEntityByUserId(userId);
+        User updatedUser = this.updateUserEntity((UserUpdateRequest) userUpdate, userEntity);
+        try {
+            userRepository.save(updatedUser);
+        } catch (DataAccessException exception) {
+            throw new UserNotUpdatedException("User " + userId + " not updated");
+        }
+        UserGetResponse updateResponse = this.modelMapper.map(updatedUser, UserGetResponse.class);
+        return updateResponse;
+    }
+
+    @Override
+    @Transactional
     public UserGetResponse deleteUserByUserId(String userId) {
         User userEntity = getUserEntityByUserId(userId);
         this.userRepository.deleteById(userEntity.getId());
         UserGetResponse deleteUser = this.modelMapper.map(userEntity, UserGetResponse.class);
         return deleteUser;
     }
+
+    @Override
+    @Transactional
+    public UserResponse addRolesByUserId(String userId, List<String> rolesNames) {
+        User userEntity = getUserEntityByUserId(userId);
+        rolesNames.forEach(role -> addRole(userEntity, role));
+        return this.modelMapper.map(userEntity, UserGetResponse.class);
+    }
+
+    @Override
+    @Transactional
+    public UserResponse removeRolesByUserId(String userId, List<String> rolesNames) {
+        User userEntity = getUserEntityByUserId(userId);
+        rolesNames.forEach(role -> removeRole(userEntity, role));
+        return this.modelMapper.map(userEntity, UserGetResponse.class);
+
+    }
+
 
     private User getUserEntityByUserName(String userName) {
         User userEntity = this.userRepository.findByUserName(userName);
@@ -106,4 +142,23 @@ public class UserService implements IUserService {
         }
     }
 
+    private void removeRole(User userEntity, String roleName) {
+        Role role = this.roleRepository.findByName(roleName);
+
+        if (role == null) {
+            throw new RoleNotFoundException("Role: " + roleName + " not found.");
+        }
+        if (!userEntity.getRoles().isEmpty() || userEntity.getRoles().contains(role)) {
+            userEntity.getRoles().remove(role);
+        }
+    }
+
+    private User updateUserEntity(UserUpdateRequest userUpdate, User userEntity) {
+        userEntity.setUserName(userUpdate.getUserName());
+        userEntity.setFirstName(userUpdate.getFirstName());
+        userEntity.setLastName(userUpdate.getLastName());
+        userEntity.setEmail(userUpdate.getEmail());
+        userEntity.setEnable(userUpdate.getEnable());
+        return userEntity;
+    }
 }
