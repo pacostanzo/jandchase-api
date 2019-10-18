@@ -19,6 +19,7 @@ import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -48,6 +49,7 @@ public class UserControllerTests {
     private MockMvc mockMvc;
 
     @MockBean
+    @Qualifier("userService")
     private IUserService userService;
 
     @Autowired
@@ -232,4 +234,30 @@ public class UserControllerTests {
                 .andExpect(jsonPath("$.roles[0].name", is("ROLE_USER")))
                 .andExpect(jsonPath("$.roles[1].name", is("ROLE_ADMIN")));
     }
+
+    @Test
+    public void addRoleToUser_ShouldReturn_UserNotFound() throws Exception {
+        given(userService.addRolesByUserId(anyString(), any())).willThrow(new UserNotFoundException());
+
+        List<String> roles = Arrays.asList("ROLE_ADMIN");
+        System.out.println(addRoleResponse.getRoles());
+        mockMvc.perform(MockMvcRequestBuilders.post("/update_user_id/addRoles")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(roles)))
+                .andExpect(status().isNotFound());
+    }
+
+
+    @Test
+    public void addRoleToUser_ShouldReturn_RoleNotFound() throws Exception {
+        given(userService.addRolesByUserId(anyString(), any())).willThrow(new RoleNotFoundException());
+
+        List<String> roles = Arrays.asList("ROLE_ADMIN");
+        System.out.println(addRoleResponse.getRoles());
+        mockMvc.perform(MockMvcRequestBuilders.post("/update_user_id/addRoles")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(roles)))
+                .andExpect(status().isNotFound());
+    }
+
 }

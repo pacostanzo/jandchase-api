@@ -36,8 +36,8 @@ public class UserGlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
 
-    @ExceptionHandler(UserNotUpdatedException.class)
-    public final ResponseEntity<ErrorMessage> notUpdatedHandler(UserNotUpdatedException ex, WebRequest request) {
+    @ExceptionHandler({UserNotUpdatedException.class, RoleNotUpdatedException.class})
+    public final ResponseEntity<ErrorMessage> notUpdatedHandler(RuntimeException ex, WebRequest request) {
         List<String> message = new ArrayList<>();
         message.add(ex.getMessage());
         ErrorMessage errorMessage = new ErrorMessage(new Date(), message,
@@ -45,8 +45,8 @@ public class UserGlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorMessage, new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(UserNotCreatedException.class)
-    public final ResponseEntity<ErrorMessage> notCreatedHandler(UserNotCreatedException ex, WebRequest request) {
+    @ExceptionHandler({UserNotCreatedException.class, RoleNotCreatedException.class})
+    public final ResponseEntity<ErrorMessage> notCreatedHandler(RuntimeException ex, WebRequest request) {
         List<String> message = new ArrayList<>();
         message.add(ex.getMessage());
         ErrorMessage errorMessage = new ErrorMessage(new Date(), message,

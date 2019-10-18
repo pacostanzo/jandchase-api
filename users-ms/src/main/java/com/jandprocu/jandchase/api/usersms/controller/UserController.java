@@ -7,6 +7,7 @@ import com.jandprocu.jandchase.api.usersms.rest.response.UserGetOAuthResponse;
 import com.jandprocu.jandchase.api.usersms.rest.response.UserGetResponse;
 import com.jandprocu.jandchase.api.usersms.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,10 +22,12 @@ public class UserController {
 
 
     @Autowired
+    @Qualifier("userService")
     private IUserService userService;
 
+
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
-            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+                 produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<UserCreateResponse> createUser(@Valid @RequestBody UserCreateRequest createRequest) {
         UserCreateResponse createdUser = userService.createUser(createRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
@@ -64,7 +67,7 @@ public class UserController {
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<UserGetResponse> addRolesToUser(@PathVariable String userId,
-                                                      @Valid @RequestBody List<String> rolesNames) {
+                                                          @Valid @RequestBody List<String> rolesNames) {
         UserGetResponse updateResponse = (UserGetResponse) userService.addRolesByUserId(userId, rolesNames);
         return ResponseEntity.status(HttpStatus.OK).body(updateResponse);
     }

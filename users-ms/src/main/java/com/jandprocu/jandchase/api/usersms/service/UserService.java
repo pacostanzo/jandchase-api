@@ -25,7 +25,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-@Service
+@Service("userService")
 public class UserService implements IUserService {
     private final String ROLE_USER = "ROLE_USER";
     private final UserRepository userRepository;

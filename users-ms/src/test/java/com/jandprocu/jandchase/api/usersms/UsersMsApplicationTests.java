@@ -146,7 +146,6 @@ public class UsersMsApplicationTests {
     }
 
 
-
     @Test
     public void addRoleToUser_OK() {
         //arrange
@@ -180,4 +179,71 @@ public class UsersMsApplicationTests {
         assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(entity.getBody().getRoles().size()).isEqualTo(1);
     }
+
+
+    @Test
+    public void createRole_OK_ReturnsRoleDetails() {
+        //arrange
+        RoleRequest roleRequest = new RoleRequest();
+        roleRequest.setName("ROLE_DEVELOPER");
+        roleRequest.setDescription("Role for developers.");
+
+        HttpEntity<RoleRequest> request = new HttpEntity<>(roleRequest, headers);
+
+        //act
+        ResponseEntity<RoleResponse> entity = restTemplate.exchange(
+                localHost + randomServerPort + "/roles/",
+                HttpMethod.POST, request, RoleResponse.class);
+
+
+        //assert
+        assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(entity.getBody().getName()).isEqualTo("ROLE_DEVELOPER");
+        assertThat(entity.getBody().getDescription()).isEqualTo("Role for developers.");
+
+    }
+
+    @Test
+    public void getRole_OK_returnsRoleDetails() {
+        //act
+        ResponseEntity<RoleResponse> entity = restTemplate.exchange(
+                localHost + randomServerPort + "/roles/ROLE_ADMIN",
+                HttpMethod.GET, new HttpEntity<>(headers),
+                RoleResponse.class);
+
+        //assert
+        assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(entity.getBody().getName()).isEqualTo("ROLE_ADMIN");
+        assertThat(entity.getBody().getDescription()).isEqualTo("Role for common admin users.");
+    }
+
+
+    @Test
+    public void updateRole_OK_ReturnsRoleDetails() {
+        //arrange
+        String description = "Role for developers Updated.";
+
+        HttpEntity<String> request = new HttpEntity<>(description, headers);
+
+        //act
+        ResponseEntity<RoleResponse> entity = restTemplate.exchange(
+                localHost + randomServerPort + "/roles/ROLE_DEVELOPER",
+                HttpMethod.PUT, request, RoleResponse.class);
+
+
+        //assert
+        assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(entity.getBody().getName()).isEqualTo("ROLE_DEVELOPER");
+        assertThat(entity.getBody().getDescription()).isEqualTo("Role for developers Updated.");
+    }
+
+
+    @Test
+    public void deleteRole_OK_ReturnsRoleDetails() {
+        //act
+        restTemplate.exchange(localHost + randomServerPort + "/roles/ROLE_TO_DELETE",
+                HttpMethod.DELETE, new HttpEntity<>(headers), String.class)
+                .getStatusCode().equals(HttpStatus.OK);
+    }
+
 }
