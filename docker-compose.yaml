@@ -49,26 +49,34 @@ services:
     networks:
       - jandchase_network
     depends_on:
-      - products-ms-db
+      - jandchase-api-db
       - gateway-ms
 
-  products-ms-db:
+  users-ms:
+    image: costanzopa/users-ms
+    container_name: users-ms
+    networks:
+      - jandchase_network
+    depends_on:
+      - products-ms
+
+  jandchase-api-db:
     restart: always
     image: mysql
     ports:
       - "3306:3306"
-    container_name: products-ms-db
+    container_name: jandchase-api-db
     networks:
       - jandchase_network
     environment:
       MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: products-ms-db
+      MYSQL_DATABASE: jandchase-api-db
     volumes:
-      - db-data:/var/lib/mysql
+      - db-data-2:/var/lib/mysql
 
 networks:
   jandchase_network:
 
 # Volumes
 volumes:
-  db-data:
+  db-data-2:
