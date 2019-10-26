@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @FeignClient(name = "users-ms")
 public interface UserClient {
-    @GetMapping(path = "/getByUserNameOAuth/{userName}",
+    @GetMapping(path = "/getByUserName/{userName}",
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    ResponseEntity<UserGetOAuthResponse> getByUserName(@PathVariable String userName);
+    ResponseEntity<UserGetOAuthResponse> getUserOAuth(@PathVariable String userName);
 }

@@ -24,7 +24,7 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-        ResponseEntity<UserGetOAuthResponse> userResponse = userClient.getByUserName(userName);
+        ResponseEntity<UserGetOAuthResponse> userResponse = userClient.getUserOAuth(userName);
         if(userResponse.getStatusCode().equals(HttpStatus.OK)) {
             UserGetOAuthResponse userGetResponse = userResponse.getBody();
             List<GrantedAuthority> authorities = userGetResponse.getRoles()

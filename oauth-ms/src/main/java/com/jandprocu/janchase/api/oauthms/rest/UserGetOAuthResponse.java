@@ -1,16 +1,32 @@
 package com.jandprocu.janchase.api.oauthms.rest;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.util.Date;
 import java.util.List;
 
 public class UserGetOAuthResponse {
-    private String userId;
+    @NotNull(message = "UserName cannot be missing or empty")
+    @Size(min = 2, message = "UserName must not be less than 2 characters")
     private String userName;
+
+    @NotNull(message = "First name cannot be missing or empty")
+    @Size(min = 2, message = "First name must not be less than 2 characters")
     private String firstName;
+
+    @NotNull(message = "Last name cannot be missing or empty")
+    @Size(min = 2, message = "Last name must not be less than 2 characters")
     private String lastName;
+
+    @Email
     private String email;
-    private String password;
-    private boolean enable;
+
+    private String userId;
     private List<RoleResponse> roles;
+    private Boolean enable;
+    private Date createdAt;
+    private String password;
 
     public List<RoleResponse> getRoles() {
         return roles;
@@ -74,5 +90,13 @@ public class UserGetOAuthResponse {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 }
