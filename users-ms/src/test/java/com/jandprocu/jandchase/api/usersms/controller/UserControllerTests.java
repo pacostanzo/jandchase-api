@@ -5,7 +5,6 @@ import com.jandprocu.jandchase.api.usersms.exception.UserNotCreatedException;
 import com.jandprocu.jandchase.api.usersms.exception.UserNotFoundException;
 import com.jandprocu.jandchase.api.usersms.exception.UserNotUpdatedException;
 import com.jandprocu.jandchase.api.usersms.rest.request.UserCreateRequest;
-import com.jandprocu.jandchase.api.usersms.rest.request.UserUpdateRequest;
 import com.jandprocu.jandchase.api.usersms.rest.response.RoleResponse;
 import com.jandprocu.jandchase.api.usersms.rest.response.UserCreateResponse;
 import com.jandprocu.jandchase.api.usersms.rest.response.UserGetOAuthResponse;
@@ -33,7 +32,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
