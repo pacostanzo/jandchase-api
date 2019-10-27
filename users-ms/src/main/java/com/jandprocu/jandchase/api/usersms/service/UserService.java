@@ -9,6 +9,7 @@ import com.jandprocu.jandchase.api.usersms.model.User;
 import com.jandprocu.jandchase.api.usersms.repository.RoleRepository;
 import com.jandprocu.jandchase.api.usersms.repository.UserRepository;
 import com.jandprocu.jandchase.api.usersms.rest.UserRest;
+import com.jandprocu.jandchase.api.usersms.rest.request.UserCreateRequest;
 import com.jandprocu.jandchase.api.usersms.rest.request.UserUpdateRequest;
 import com.jandprocu.jandchase.api.usersms.rest.response.UserCreateResponse;
 import com.jandprocu.jandchase.api.usersms.rest.response.UserGetOAuthResponse;
@@ -18,6 +19,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,22 +33,28 @@ public class UserService implements IUserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private ModelMapper modelMapper;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository, RoleRepository roleRepository) {
+    public UserService(UserRepository userRepository,
+                       RoleRepository roleRepository,
+                       BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.modelMapper = new ModelMapper();
         this.modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @Override
     @Transactional
     public UserCreateResponse createUser(UserRest userRequest) {
         User userEntity = modelMapper.map(userRequest, User.class);
+        UserCreateRequest userCreateRequest = (UserCreateRequest) userRequest;
         userEntity.setUserId(UUID.randomUUID().toString());
         userEntity.setCreatedAt(new Date());
         userEntity.setEnable(Boolean.TRUE);
+        userEntity.setPassword(this.bCryptPasswordEncoder.encode(userCreateRequest.getPassword()));
 
         addRole(userEntity, ROLE_USER);
 
@@ -56,26 +64,21 @@ public class UserService implements IUserService {
             throw new UserNotCreatedException("User " + userEntity.getUserName() + " not created.");
         }
 
-        UserCreateResponse userResponse = modelMapper.map(userEntity, UserCreateResponse.class);
-
-        return userResponse;
-
+        return modelMapper.map(userEntity, UserCreateResponse.class);
     }
 
     @Override
     @Transactional(readOnly = true)
     public UserGetResponse getUserByUserId(String userId) {
         User userEntity = getUserEntityByUserId(userId);
-        UserGetResponse getUserResponse = this.modelMapper.map(userEntity, UserGetResponse.class);
-        return getUserResponse;
+        return this.modelMapper.map(userEntity, UserGetResponse.class);
     }
 
     @Override
     @Transactional(readOnly = true)
     public UserGetOAuthResponse getUserByUserName(String userName) {
         User userEntity = getUserEntityByUserName(userName);
-        UserGetOAuthResponse getUserResponse = this.modelMapper.map(userEntity, UserGetOAuthResponse.class);
-        return getUserResponse;
+        return this.modelMapper.map(userEntity, UserGetOAuthResponse.class);
     }
 
     @Override
@@ -88,8 +91,7 @@ public class UserService implements IUserService {
         } catch (DataAccessException exception) {
             throw new UserNotUpdatedException("User " + userId + " not updated");
         }
-        UserGetResponse updateResponse = this.modelMapper.map(updatedUser, UserGetResponse.class);
-        return updateResponse;
+        return this.modelMapper.map(updatedUser, UserGetResponse.class);
     }
 
     @Override
@@ -97,8 +99,7 @@ public class UserService implements IUserService {
     public UserGetResponse deleteUserByUserId(String userId) {
         User userEntity = getUserEntityByUserId(userId);
         this.userRepository.deleteById(userEntity.getId());
-        UserGetResponse deleteUser = this.modelMapper.map(userEntity, UserGetResponse.class);
-        return deleteUser;
+        return this.modelMapper.map(userEntity, UserGetResponse.class);
     }
 
     @Override

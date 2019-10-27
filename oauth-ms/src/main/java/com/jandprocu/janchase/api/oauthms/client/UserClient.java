@@ -11,5 +11,5 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface UserClient {
     @GetMapping(path = "/getByUserName/{userName}",
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    ResponseEntity<UserGetOAuthResponse> getUserOAuth(@PathVariable String userName);
+    ResponseEntity<UserGetOAuthResponse> getUserOAuth(@PathVariable("userName") String userName);
 }

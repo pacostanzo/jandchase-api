@@ -42,7 +42,7 @@ public class User implements Serializable {
 
     private Boolean enable;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 100)
     @NotEmpty
     private String password;
 

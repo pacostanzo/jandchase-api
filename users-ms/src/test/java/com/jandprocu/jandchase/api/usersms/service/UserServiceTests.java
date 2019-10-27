@@ -20,6 +20,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
@@ -34,6 +35,9 @@ public class UserServiceTests {
     @Mock
     private RoleRepository roleRepository;
 
+    @Mock
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
     private IUserService userService;
 
     private UserCreateRequest createRequest;
@@ -44,7 +48,7 @@ public class UserServiceTests {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
-        userService = new UserService(userRepository, roleRepository);
+        userService = new UserService(userRepository, roleRepository, bCryptPasswordEncoder);
         createRequest = new UserCreateRequest();
         createRequest.setUserName("THIRD_USER");
         createRequest.setFirstName("ThirdUser");
