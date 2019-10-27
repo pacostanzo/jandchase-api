@@ -4,6 +4,6 @@ import com.jandprocu.janchase.api.oauthms.rest.UserGetOAuthResponse;
 
 public interface IUserService {
 
-    public UserGetOAuthResponse findByUsername(String username);
+    UserGetOAuthResponse findByUsername(String username);
 
 }

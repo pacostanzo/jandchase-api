@@ -29,23 +29,22 @@ public class UserService implements UserDetailsService, IUserService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.info("Usuario loadUserByUsername: " + username);
-        ResponseEntity<UserGetOAuthResponse> userResponse = userClient.getUserOAuth(username);
-        log.info("Usuario autenticado: " + userResponse);
-        if(userResponse.getStatusCode().equals(HttpStatus.OK)) {
-            UserGetOAuthResponse userGetResponse = userResponse.getBody();
-            List<GrantedAuthority> authorities = userGetResponse.getRoles()
-                                                                .stream()
-                                                                .map(role -> new SimpleGrantedAuthority(role.getName()))
-                                                                .collect(Collectors.toList());
-            return new User(userGetResponse.getUserName(), userGetResponse.getPassword(), userGetResponse.getEnable(), true,
-                            true, true, authorities);
-        }
-        log.error("Usuario no autenticado: " + username);
-        throw new UsernameNotFoundException("Username: " + username+" not found");
+        UserGetOAuthResponse userGetResponse = this.findByUsername(username);
+        log.info("Usuario autenticado: " + userGetResponse);
+        List<GrantedAuthority> authorities = userGetResponse.getRoles()
+                .stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName()))
+                .collect(Collectors.toList());
+        return new User(userGetResponse.getUserName(), userGetResponse.getPassword(), userGetResponse.getEnable(), true,
+                true, true, authorities);
     }
 
     @Override
     public UserGetOAuthResponse findByUsername(String username) {
-        return null;
+        ResponseEntity<UserGetOAuthResponse> userResponse = userClient.getUserOAuth(username);
+        if (userResponse.getStatusCode().equals(HttpStatus.OK)) {
+            return userResponse.getBody();
+        }
+        throw new UsernameNotFoundException("Username: " + username + " not found");
     }
 }
