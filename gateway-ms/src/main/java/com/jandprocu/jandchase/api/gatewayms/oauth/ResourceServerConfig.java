@@ -1,5 +1,6 @@
 package com.jandprocu.jandchase.api.gatewayms.oauth;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -13,6 +14,10 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 @Configuration
 @EnableResourceServer
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
+
+    @Value("${config.security.oauth.client.signKey}")
+    private String SIGN_KEY;
+
     @Override
     public void configure(ResourceServerSecurityConfigurer resources) {
         resources.tokenStore(tokenStore());
@@ -22,7 +27,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     public void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests().antMatchers("/api/credentials/oauth/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/products").permitAll()
-                .antMatchers(HttpMethod.POST,"/api/users").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/users").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/products/{productId}").hasAnyRole("ADMIN", "USER")
                 .antMatchers(HttpMethod.POST, "/api/products/getByIds").hasAnyRole("ADMIN", "USER")
                 .antMatchers("/api/products/**", "/api/users/**").hasRole("ADMIN")
@@ -38,7 +43,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Bean
     public JwtAccessTokenConverter accessTokenConverter() {
         JwtAccessTokenConverter jwtAccessTokenConverter = new JwtAccessTokenConverter();
-        jwtAccessTokenConverter.setSigningKey("secret_token_aeiou");
+        jwtAccessTokenConverter.setSigningKey(SIGN_KEY);
         return jwtAccessTokenConverter;
     }
 }

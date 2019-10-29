@@ -3,6 +3,7 @@ package com.jandprocu.janchase.api.oauthms.security;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
@@ -22,16 +23,19 @@ import java.util.Arrays;
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
 
+    private final Environment enviroment;
     private BCryptPasswordEncoder passwordEncoder;
     private AuthenticationManager authenticationManager;
     private TokenEnhancerInfo tokenEnhancerInfo;
 
     AuthorizationServerConfig(BCryptPasswordEncoder passwordEncoder,
                               AuthenticationManager authenticationManager,
-                              TokenEnhancerInfo tokenEnhancerInfo) {
+                              TokenEnhancerInfo tokenEnhancerInfo,
+                              Environment env) {
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.tokenEnhancerInfo = tokenEnhancerInfo;
+        this.enviroment = env;
     }
 
     @Override
@@ -43,8 +47,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.inMemory()
-                .withClient("apiClient")
-                .secret(passwordEncoder.encode("1234"))
+                .withClient(enviroment.getProperty("config.security.oauth.client.id"))
+                .secret(passwordEncoder.encode(enviroment.getProperty("config.security.oauth.client.secret")))
                 .scopes("read", "write")
                 .authorizedGrantTypes("password", "refresh_token")
                 .accessTokenValiditySeconds(3600)
@@ -70,7 +74,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Bean
     public JwtAccessTokenConverter accessTokenConverter() {
         JwtAccessTokenConverter jwtAccessTokenConverter = new JwtAccessTokenConverter();
-        jwtAccessTokenConverter.setSigningKey("secret_token_aeiou");
+        jwtAccessTokenConverter.setSigningKey(enviroment.getProperty("config.security.oauth.client.signKey"));
         return jwtAccessTokenConverter;
     }
 }
