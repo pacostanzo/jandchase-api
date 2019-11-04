@@ -1,0 +1,544 @@
+{
+	"info": {
+		"_postman_id": "5ebb56eb-bc86-4979-9134-3bfba8b2aee9",
+		"name": "JandChaseApi",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "users-ms",
+			"item": [
+				{
+					"name": "CreateUser",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "bb230e15-aebc-42ec-8137-0bc11098c037",
+								"exec": [
+									"if(pm.response.code === 201) {",
+									"    pm.environment.set('userId', pm.response.json().userId)",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"userName\":\"costanzopa\",\n\t\"firstName\":\"Pablo\",\n\t\"lastName\":\"Costanzo\",\n\t\"email\":\"costanzopa@gmail.com\",\n\t\"password\":\"12345678\"\n}"
+						},
+						"url": {
+							"raw": "{{zuulUrl}}/api/users",
+							"host": [
+								"{{zuulUrl}}"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetUserById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{zuulUrl}}/api/users/{{userId}}",
+							"host": [
+								"{{zuulUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"{{userId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateUser",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"userName\":\"costanzopa\",\n\t\"firstName\":\"Agustin\",\n\t\"lastName\":\"Costanzo\",\n\t\"email\":\"pcostanzo@gmail.com\"\n}"
+						},
+						"url": {
+							"raw": "{{zuulUrl}}/api/users/{{userId}}",
+							"host": [
+								"{{zuulUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"{{userId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteUser",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "adbd3218-0d27-489f-a05a-a9ece45dc60f",
+								"exec": [
+									"if(pm.response.code === 200) {",
+									"    pm.environment.set('userId', \"\")",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{zuulUrl}}/api/users/{{userId}}",
+							"host": [
+								"{{zuulUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"{{userId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{zuulUrl}}/api/users",
+							"host": [
+								"{{zuulUrl}}"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Role",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"ROLE_USER\",\n\t\"description\": \"Description to common user.\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{zuulUrl}}/api/users/roles/",
+							"host": [
+								"{{zuulUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"roles",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AddRole",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmaXJzdE5hbWUiOiJqYW5kY2hhc2V1c2VyIiwibGFzdE5hbWUiOiJqYW5kY2hhc2V1c2VyIiwidXNlcl9uYW1lIjoiamFuZGNoYXNldXNlciIsInNjb3BlIjpbInJlYWQiLCJ3cml0ZSJdLCJleHAiOjE1NzIyMTAzMTYsImF1dGhvcml0aWVzIjpbIlJPTEVfU1lTVEVNIl0sImp0aSI6IjAzOTAzODYyLTBiZWItNDIxYi05OTNjLWYwZDMxOWFmMmYzYiIsImVtYWlsIjoiZmlyc3RfdXNlckBlbWFpbC50ZXN0IiwiY2xpZW50X2lkIjoiYXBpQ2xpZW50In0.dMsuA6Bsr33hPOu6_EfySleRzWdl-3LgcKkk_ixxi4I",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\"ROLE_ADMIN\"]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{zuulUrl}}/api/users/{{userId}}/addRoles",
+							"host": [
+								"{{zuulUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"{{userId}}",
+								"addRoles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "RemoveRole",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmaXJzdE5hbWUiOiJQYWJsbyIsImxhc3ROYW1lIjoiQ29zdGFuem8iLCJ1c2VyX25hbWUiOiJwYWNvc3RhbnpvIiwic2NvcGUiOlsicmVhZCIsIndyaXRlIl0sImV4cCI6MTU3MjIxMjQ5NCwiYXV0aG9yaXRpZXMiOlsiUk9MRV9VU0VSIl0sImp0aSI6IjVmNmFmOGM1LWIzNDYtNDQ0ZS1iN2M0LWExMjAwZDIwN2M4OCIsImVtYWlsIjoicGFjb3N0YW56b0BnbWFpbC5jb20iLCJjbGllbnRfaWQiOiJhcGlDbGllbnQifQ.omCgEk7SgTzpr4PbDSU6hpK5KNgImFB1__vOl5eRPKo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\"ROLE_USER\"]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{zuulUrl}}/api/users/{{userId}}/removeRoles",
+							"host": [
+								"{{zuulUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"{{userId}}",
+								"removeRoles"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "products-ms",
+			"item": [
+				{
+					"name": "Create Products",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Dell Inspiron\",\n\t\"description\": \"NoteBook Dell Inspiron 15\",\n\t\"category\": \"computer\",\n\t\"amount\": 900,\n\t\"currency\": \"USD\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{zuulUrl}}/api/products",
+							"host": [
+								"{{zuulUrl}}"
+							],
+							"path": [
+								"api",
+								"products"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "config-ms",
+			"item": [
+				{
+					"name": "Bus Refresh",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{configUrl}}/actuator/bus-refresh",
+							"host": [
+								"{{configUrl}}"
+							],
+							"path": [
+								"actuator",
+								"bus-refresh"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{configUrl}}/actuator/health",
+							"host": [
+								"{{configUrl}}"
+							],
+							"path": [
+								"actuator",
+								"health"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "oauth-ms",
+			"item": [
+				{
+					"name": "token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d6faaaf4-d8c0-4405-8431-9f4893ea7c0c",
+								"exec": [
+									"if(pm.response.code === 200) {",
+									"    pm.environment.set('token', pm.response.json().access_token)",
+									"    pm.environment.set('refresh_token',pm.response.json().refresh_token)",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "1234",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "apiClient",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "jandchase_system",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "12345",
+									"type": "text"
+								},
+								{
+									"key": "grant_type",
+									"value": "password",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{zuulUrl}}/api/credentials/oauth/token",
+							"host": [
+								"{{zuulUrl}}"
+							],
+							"path": [
+								"api",
+								"credentials",
+								"oauth",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "refresh token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d6faaaf4-d8c0-4405-8431-9f4893ea7c0c",
+								"exec": [
+									"if(pm.response.code === 200) {",
+									"    pm.environment.set('token', pm.response.json().access_token)",
+									"    pm.environment.set('refresh_token',pm.response.json().refresh_token)",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "1234",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "apiClient",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "refresh_token",
+									"type": "text"
+								},
+								{
+									"key": "refresh_token",
+									"value": "{{refresh_token}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{zuulUrl}}/api/credentials/oauth/token",
+							"host": [
+								"{{zuulUrl}}"
+							],
+							"path": [
+								"api",
+								"credentials",
+								"oauth",
+								"token"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	]
+}
