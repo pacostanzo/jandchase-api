@@ -60,6 +60,15 @@ services:
     depends_on:
       - products-ms
 
+
+  oauth-ms:
+    image: costanzopa/oauth-ms
+    container_name: oauth-ms
+    networks:
+      - jandchase_network
+    depends_on:
+      - products-ms
+
   jandchase-api-db:
     restart: always
     image: mysql
